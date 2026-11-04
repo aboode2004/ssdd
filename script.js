@@ -1,13 +1,13 @@
-const SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
+Const SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-y-8QOaGJ6RzC4UxeG5ATw_LxVZByAo';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let currentUser = null, allProducts = [], allOrders = [], userWishlistIds = [], userAddresses = [];
+let currentUser = null, allProducts = [], allOrders = [], userWishlistIds = [], userAddresses = [], allCategories = [], allCoupons = [], allAnnouncements = [];
 let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 let recentViews = JSON.parse(localStorage.getItem('recentViews') || '[]');
 let activeProductId = null, modalQty = 1, appliedDiscountAmount = 0, appliedCouponCode = "";
 let previousOrderCount = 0;
-let tempEmailForOtp = "";
+let currentCategoryFilter = 'all';
 
 function playOrderSound() {
     try {
@@ -15,8 +15,8 @@ function playOrderSound() {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
         gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
         osc.connect(gain);
@@ -32,6 +32,11 @@ function showPage(pageName) {
     if(pageName === 'profile') { switchUserTab('orders'); loadProfileData(); }
     if(pageName === 'admin') { switchAdminTab('products'); loadAdminData(); }
     if(pageName === 'home') { window.scrollTo(0,0); renderRecentlyViewed(); }
+}
+
+// ميزة 2: زر الرجوع الذكي
+function goBackToHome() {
+    showPage('home');
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('active'); }
@@ -51,22 +56,16 @@ async function initAuth() {
 function setUser(user) {
     currentUser = user;
     const nav = document.getElementById('navActions');
-    
-    // زر تواصل مع الدعم الفني في الأعلى
-    const supportBtn = `<button class="nav-btn" onclick="window.open('https://wa.me/9647725372995', '_blank')" title="تواصل مع الدعم الفني"><i class="fab fa-whatsapp"></i> تواصل مع الدعم الفني</button>`;
-
     if (user) {
         const username = user.user_metadata?.username || 'مستخدم';
         const isAdmin = user.email === '2004oopp202326@gmail.com';
-        nav.innerHTML = `${supportBtn}
-                         <button class="nav-btn" onclick="showPage('profile')"><i class="fas fa-user"></i> ${username}</button>
+        nav.innerHTML = `<button class="nav-btn" onclick="showPage('profile')"><i class="fas fa-user"></i> ${username}</button>
                          ${isAdmin ? `<button class="nav-btn nav-btn-login" onclick="showPage('admin')"><i class="fas fa-cog"></i> الإدارة</button>` : ''}
                          <button class="nav-btn nav-btn-cart" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> <span class="cart-count" id="cartCount">0</span></button>`;
         loadWishlist(); loadAddresses();
     } else {
         userWishlistIds = []; userAddresses = [];
-        nav.innerHTML = `${supportBtn}
-                         <button class="nav-btn nav-btn-login" onclick="showPage('auth')">دخول</button>
+        nav.innerHTML = `<button class="nav-btn nav-btn-login" onclick="showPage('auth')">دخول</button>
                          <button class="nav-btn nav-btn-cart" onclick="toggleCart()"><i class="fas fa-shopping-cart"></i> <span class="cart-count" id="cartCount">0</span></button>`;
     }
     updateCartUI();
@@ -79,59 +78,11 @@ function switchAuthTab(t) {
     document.getElementById('formSignup').classList.toggle('hidden', t !== 'signup');
 }
 
-async function sendEmailOTP(email) {
-    tempEmailForOtp = email;
-    const { error } = await db.auth.signInWithOtp({ email: email });
-    if (error) {
-        showToast('خطأ في إرسال الرمز: ' + error.message, 'error');
-        return false;
-    } else {
-        showToast('تم إرسال رمز التأكيد إلى بريدك الإلكتروني 📩');
-        return true;
-    }
-}
-
-async function verifyEmailOTP(tokenCode) {
-    const { data, error } = await db.auth.verifyOtp({
-        email: tempEmailForOtp,
-        token: tokenCode,
-        type: 'email'
-    });
-
-    if (error) {
-        showToast('رمز التأكيد غير صحيح أو انتهت صلاحيته', 'error');
-    } else {
-        showToast('تم تسجيل الدخول بنجاح! 🎉');
-        setUser(data.user);
-        showPage('home');
-    }
-}
-
 async function handleLogin(e) {
-    e.preventDefault(); 
-    const btn = document.getElementById('btnLogin'); 
-    btn.disabled = true; 
-    btn.textContent = 'جاري...';
-    
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
-
-    if (!password) {
-        await sendEmailOTP(email);
-        btn.disabled = false; 
-        btn.textContent = 'دخول';
-        return;
-    }
-
-    const { error } = await db.auth.signInWithPassword({ email: email, password: password });
-    if (error) { 
-        showToast('خطأ: ' + (error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : error.message), 'error'); 
-        btn.disabled = false; 
-        btn.textContent = 'دخول'; 
-    } else { 
-        showToast('مرحباً!'); 
-        showPage('home'); 
-    }
+    e.preventDefault(); const btn = document.getElementById('btnLogin'); btn.disabled = true; btn.textContent = 'جاري...';
+    const { error } = await db.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value });
+    if (error) { showToast('خطأ: ' + (error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : error.message), 'error'); btn.disabled = false; btn.textContent = 'دخول'; } 
+    else { showToast('مرحباً!'); showPage('home'); }
 }
 
 function generateUsername(name) {
@@ -241,9 +192,58 @@ async function loadWishlistItems() {
     `).join('');
 }
 
+// تحميل المنتجات والأقسام والإعلانات
 async function loadProducts() {
-    const { data } = await db.from('products').select('*');
-    allProducts = data || []; renderProducts(allProducts); renderRecentlyViewed();
+    const { data: prodData } = await db.from('products').select('*');
+    allProducts = prodData || []; 
+    
+    // جلب الأقسام
+    const { data: catData } = await db.from('categories').select('*');
+    allCategories = catData || [];
+    renderCategoriesUI();
+
+    // جلب شريط الإعلانات المتحرك (ميزة 3)
+    const { data: annData } = await db.from('announcements').select('*').limit(1);
+    allAnnouncements = annData || [];
+    renderAnnouncementBar();
+
+    renderProducts(allProducts); 
+    renderRecentlyViewed();
+}
+
+// عرض الأقسام في واجهة المستخدم (تصفية الأقسام مثل منزلية وغيرها)
+function renderCategoriesUI() {
+    const catContainer = document.getElementById('categoriesContainer');
+    if(!catContainer) return;
+    
+    let html = `<button class="category-chip ${currentCategoryFilter === 'all' ? 'active' : ''}" onclick="filterByCategory('all')">الكل</button>`;
+    html += allCategories.map(c => `
+        <button class="category-chip ${currentCategoryFilter === c.name ? 'active' : ''}" onclick="filterByCategory('${c.name}')">${c.name}</button>
+    `).join('');
+    catContainer.innerHTML = html;
+}
+
+function filterByCategory(catName) {
+    currentCategoryFilter = catName;
+    renderCategoriesUI();
+    if(catName === 'all') {
+        renderProducts(allProducts);
+    } else {
+        renderProducts(allProducts.filter(p => p.category === catName));
+    }
+}
+
+// عرض شريط الإعلانات المتحرك (ميزة 3)
+function renderAnnouncementBar() {
+    let bar = document.getElementById('announcementBar');
+    if(!bar) {
+        bar = document.createElement('div');
+        bar.id = 'announcementBar';
+        bar.style.cssText = 'background:#1a1a1a; color:#fea621; padding:8px 0; overflow:hidden; white-space:nowrap; font-weight:bold; font-size:0.9rem;';
+        document.body.insertBefore(bar, document.body.firstChild);
+    }
+    const text = allAnnouncements.length > 0 ? allAnnouncements[0].text : 'أهلاً بك في متجر يساعدكم - تسوق أفضل المنتجات بأفضل الأسعار!';
+    bar.innerHTML = `<marquee direction="right" scrollamount="5">🔥 ${text} 🔥</marquee>`;
 }
 
 function renderProducts(list) {
@@ -354,7 +354,31 @@ function changeQty(id, delta) { const item = cart.find(x => x.id === id); if (!i
 
 function openCheckout() { if (!currentUser) { showToast('سجل دخول أولاً', 'error'); toggleCart(); showPage('auth'); return; } appliedDiscountAmount = 0; document.getElementById('couponCode').value = ""; updateChkTotals(); document.getElementById('checkoutModal').classList.add('active'); toggleCart(); }
 
-function applyCoupon() { const code = document.getElementById('couponCode').value.trim().toUpperCase(); appliedDiscountAmount = 0; if(code === "NINEVEH10") { appliedDiscountAmount = 0.10; appliedCouponCode = code; showToast('خصم 10%!'); } else if(code === "FREE5") { appliedDiscountAmount = 5000; appliedCouponCode = code; showToast('خصم 5000 د.ع!'); } else { showToast('كود غير صحيح', 'error'); } updateChkTotals(); }
+// تطبيق أكواد الخصم التي ينشئها المدير (ميزة 4)
+async function applyCoupon() { 
+    const code = document.getElementById('couponCode').value.trim().toUpperCase(); 
+    appliedDiscountAmount = 0; 
+    
+    // فحص الكود من قاعدة البيانات المدار من قبل المدير
+    const { data: couponData } = await db.from('coupons').select('*').eq('code', code).single();
+    
+    if(couponData) {
+        appliedDiscountAmount = couponData.discount_value; // نسبة (مثل 0.10) أو مبلغ ثابت
+        appliedCouponCode = code;
+        showToast('تم تطبيق كود الخصم بنجاح!');
+    } else if(code === "NINEVEH10") { 
+        appliedDiscountAmount = 0.10; 
+        appliedCouponCode = code; 
+        showToast('خصم 10%!'); 
+    } else if(code === "FREE5") { 
+        appliedDiscountAmount = 5000; 
+        appliedCouponCode = code; 
+        showToast('خصم 5000 د.ع!'); 
+    } else { 
+        showToast('كود الخصم غير صحيح أو منتهي الصلاحية', 'error'); 
+    } 
+    updateChkTotals(); 
+}
 
 function updateChkTotals() {
     const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
@@ -370,8 +394,6 @@ async function submitOrder(e) {
     const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
     let dv = 0; if(appliedDiscountAmount < 1 && appliedDiscountAmount > 0) dv = subtotal * appliedDiscountAmount; else dv = appliedDiscountAmount;
     let ft = subtotal - dv; if(ft < 0) ft = 0;
-    
-    // إرسال الطلب مع حفظ تفاصيل المنتجات (السلة) للإدارة
     const { data, error } = await db.from('orders').insert([{ 
         user_id: currentUser.id, 
         total: ft, 
@@ -379,13 +401,10 @@ async function submitOrder(e) {
         customer_name: document.getElementById('orderName').value, 
         customer_phone: document.getElementById('orderPhone').value, 
         customer_address: document.getElementById('orderAddress').value, 
-        customer_city: 'نينوى',
         coupon_used: appliedCouponCode,
         delivery_cost: 0,
-        delivery_time: 'قيد التحديد',
-        items: cart
+        delivery_time: 'قيد التحديد'
     }]).select();
-    
     if (error) { showToast(error.message, 'error'); btn.disabled = false; } 
     else { document.getElementById('invoiceId').textContent = '#' + data[0].id; document.getElementById('checkoutModal').classList.remove('active'); document.getElementById('invoiceModal').classList.add('active'); cart = []; saveCart(); updateCartUI(); btn.disabled = false; }
 }
@@ -414,14 +433,14 @@ async function loadProfileData() {
             : `<div class="status-track"><div class="status-step ${s1}"><div class="status-dot"></div>انتظار</div><div class="status-step ${s2}"><div class="status-dot"></div>توصيل (${o.delivery_time || 'قيد التحديد'})</div><div class="status-step ${s3}"><div class="status-dot"></div>تم</div></div>`;
 
         let cancelBtnHtml = (o.status === 'pending') ? `<button onclick="userCancelOrder(${o.id})" class="btn-delete" style="margin-top:10px; width:100%;"><i class="fas fa-times-circle"></i> إلغاء الطلب الآن</button>` : '';
-        let deliveryInfo = (o.delivery_cost && o.delivery_cost > 0) ? `<div style="margin-top:5px; color:var(--blue);">تكلفة التوصيل: ${Number(o.delivery_cost).toLocaleString()} د.ع (${o.delivery_time})</div>` : '';
+        let deliveryInfo = o.delivery_cost > 0 ? `<div style="margin-top:5px; color:var(--blue);">تكلفة التوصيل: ${Number(o.delivery_cost).toLocaleString()} د.ع (${o.delivery_time})</div>` : '';
         
         return `<div style="background:white; padding:15px; border-radius:10px; margin-bottom:15px;"><div style="display:flex; justify-content:space-between; border-bottom:1px solid #ddd; padding-bottom:10px;"><b>طلب #${o.id}</b><b style="color:var(--orange)">الإجمالي: ${(o.total + (o.delivery_cost || 0)).toLocaleString()} د.ع</b></div>${deliveryInfo}${trackHtml}${cancelBtnHtml}</div>`;
     }).join('') : '<p>لا توجد طلبات.</p>';
 }
 
 function switchAdminTab(tab) {
-    ['products', 'orders', 'lottery', 'settings', 'reports'].forEach(t => {
+    ['products', 'categories', 'coupons', 'announcements', 'orders', 'lottery', 'settings', 'reports'].forEach(t => {
         const btn = document.getElementById('tabAdmin' + t.charAt(0).toUpperCase() + t.slice(1));
         const sec = document.getElementById('admin' + t.charAt(0).toUpperCase() + t.slice(1) + 'Section');
         if(btn) btn.classList.toggle('active', t === tab);
@@ -441,8 +460,12 @@ async function quickUpdateStock(productId, delta) {
 async function loadAdminData() {
     const { data: p } = await db.from('products').select('*'); 
     const { data: o } = await db.from('orders').select('*').order('created_at', { ascending: false });
-    allProducts = p || []; allOrders = o || []; 
+    const { data: c } = await db.from('categories').select('*');
+    const { data: cp } = await db.from('coupons').select('*');
     
+    allProducts = p || []; allOrders = o || []; allCategories = c || []; allCoupons = cp || [];
+    
+    // التنبيه الصوتي الفوري للطلبات الجديدة
     if (previousOrderCount > 0 && allOrders.length > previousOrderCount) {
         playOrderSound();
         showToast('🔔 هناك طلب جديد ورد إلى المتجر الآن!', 'success');
@@ -460,7 +483,77 @@ async function loadAdminData() {
 
     renderAdminProducts(); 
     renderAdminOrders();
+    renderAdminCategories();
+    renderAdminCoupons();
     renderLowStock();
+}
+
+// ميزة 1: إدارة الأقسام للمدير (إضافة وعرض وحذف)
+async function addNewCategory(e) {
+    e.preventDefault();
+    const name = document.getElementById('newCategoryName').value.trim();
+    if(!name) return;
+    const { error } = await db.from('categories').insert([{ name }]);
+    if(error) { showToast('خطأ: ' + error.message, 'error'); } 
+    else { showToast('تمت إضافة القسم بنجاح'); document.getElementById('addCategoryForm').reset(); loadAdminData(); }
+}
+
+async function deleteCategory(id) {
+    if(!confirm('هل أنت متأكد من حذف هذا القسم؟')) return;
+    const { error } = await db.from('categories').delete().eq('id', id);
+    if(error) { showToast('خطأ: ' + error.message, 'error'); } 
+    else { showToast('تم حذف القسم'); loadAdminData(); }
+}
+
+function renderAdminCategories() {
+    const list = document.getElementById('adminCategoriesList');
+    if(!list) return;
+    list.innerHTML = allCategories.length ? allCategories.map(c => `
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding:10px 0;">
+            <b>${c.name}</b>
+            <button onclick="deleteCategory(${c.id})" class="btn-delete"><i class="fas fa-trash"></i> حذف</button>
+        </div>
+    `).join('') : '<p>لا توجد أقسام مضافة بعد.</p>';
+}
+
+// ميزة 4: إنشاء إدارة أكواد الخصم من قبل المدير
+async function addNewCoupon(e) {
+    e.preventDefault();
+    const code = document.getElementById('newCouponCode').value.trim().toUpperCase();
+    const discountVal = parseFloat(document.getElementById('newCouponDiscount').value);
+    
+    if(!code || isNaN(discountVal)) return;
+    const { error } = await db.from('coupons').insert([{ code, discount_value: discountVal }]);
+    if(error) { showToast('خطأ: ' + error.message, 'error'); } 
+    else { showToast('تم إنشاء كود الخصم بنجاح! 🎟️'); document.getElementById('addCouponForm').reset(); loadAdminData(); }
+}
+
+async function deleteCoupon(id) {
+    const { error } = await db.from('coupons').delete().eq('id', id);
+    if(error) { showToast('خطأ: ' + error.message, 'error'); } 
+    else { showToast('تم حذف الكود'); loadAdminData(); }
+}
+
+function renderAdminCoupons() {
+    const list = document.getElementById('adminCouponsList');
+    if(!list) return;
+    list.innerHTML = allCoupons.length ? allCoupons.map(cp => `
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding:10px 0;">
+            <div><b>كود: ${cp.code}</b><br><small>قيمة الخصم: ${cp.discount_value}</small></div>
+            <button onclick="deleteCoupon(${cp.id})" class="btn-delete"><i class="fas fa-trash"></i></button>
+        </div>
+    `).join('') : '<p>لا توجد أكواد خصم نشطة.</p>';
+}
+
+// ميزة 3: إدارة شريط الإعلانات المتحرك من قبل المدير
+async function saveAnnouncement(e) {
+    e.preventDefault();
+    const text = document.getElementById('announcementTextInput').value.trim();
+    // حذف القديم وتحديث الجديد
+    await db.from('announcements').delete().neq('id', 0);
+    const { error } = await db.from('announcements').insert([{ text }]);
+    if(error) { showToast('خطأ: ' + error.message, 'error'); }
+    else { showToast('تم تحديث شريط الإعلانات بنجاح!'); loadProducts(); }
 }
 
 function renderAdminProducts() {
@@ -521,24 +614,7 @@ function renderAdminOrders() {
             actions = `<button onclick="printShippingLabel(${o.id})" class="btn-edit" style="background:var(--purple-dark);"><i class="fas fa-print"></i> طباعة البوليصة</button>
                        <span style="color:var(--green); font-size:0.8rem; margin-right:5px;">مكتمل</span>`;
         }
-
-        // عرض تفاصيل المنتجات المطلوبة للإدارة
-        let itemsHtml = '';
-        if (o.items && Array.isArray(o.items) && o.items.length > 0) {
-            itemsHtml = `<div style="margin: 8px 0; background: var(--light); padding: 8px; border-radius: 6px;">
-                <b style="font-size:0.85rem; color:var(--primary);">📦 المنتجات المطلوبة للشحن:</b>
-                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 4px;">
-                    ${o.items.map(item => `
-                        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem;">
-                            <span>${item.icon || '🛍️'}</span>
-                            <span><b>${item.name}</b> (الكمية: ${item.qty})</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        }
-
-        return `<div class="order-card"><div class="order-header"><span>#${o.id}</span><span>المجموع: ${(o.total + (o.delivery_cost || 0)).toLocaleString()} د.ع</span></div><div class="order-details"><div><b>الزبون:</b> ${o.customer_name} - ${o.customer_phone}</div><div><b>العنوان:</b> ${o.customer_address}</div>${itemsHtml}<div><b>التوصيل:</b> ${o.delivery_cost ? o.delivery_cost + ' د.ع (' + o.delivery_time + ')' : 'لم يحدد بعد'}</div></div><div class="order-actions">${actions}</div></div>`;
+        return `<div class="order-card"><div class="order-header"><span>#${o.id}</span><span>المجموع: ${(o.total + (o.delivery_cost || 0)).toLocaleString()} د.ع</span></div><div class="order-details"><div><b>الزبون:</b> ${o.customer_name} - ${o.customer_phone}</div><div><b>العنوان:</b> ${o.customer_address}</div><div><b>التوصيل:</b> ${o.delivery_cost ? o.delivery_cost + ' د.ع (' + o.delivery_time + ')' : 'لم يحدد بعد'}</div></div><div class="order-actions">${actions}</div></div>`;
     }).join('');
 }
 
@@ -731,6 +807,7 @@ function showToast(m, t = 'success') { const el = document.getElementById('toast
 document.addEventListener('DOMContentLoaded', () => { 
     initAuth(); 
     loadProducts(); 
+    // فحص دوري للطلبات الجديدة كل 30 ثانية لتشغيل التنبيه الصوتي للمدير
     setInterval(() => {
         if (currentUser && currentUser.email === '2004oopp202326@gmail.com') {
             loadAdminData();
