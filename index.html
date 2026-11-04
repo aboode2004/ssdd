@@ -30,16 +30,17 @@
         /* شريط التنقل العلوي */
         header { background: var(--dark); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); cursor: pointer; }
-        .nav-actions { display: flex; gap: 10px; align-items: center; }
+        .nav-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
         .nav-btn { background: transparent; border: 1px solid var(--primary); color: white; padding: 6px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
         .nav-btn:hover { background: var(--primary); color: var(--dark); }
         .nav-btn-login { background: var(--primary); color: var(--dark); font-weight: bold; }
         .nav-btn-cart { position: relative; }
         .cart-count { background: var(--red); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; position: absolute; top: -5px; right: -5px; }
 
-        /* زر الرجوع */
+        /* زر الرجوع الذكي */
         .back-btn-container { padding: 15px 20px 0 20px; }
-        .back-btn { background: var(--dark); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
+        .back-btn { background: var(--dark); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .back-btn:hover { background: var(--primary); color: var(--dark); }
 
         /* الأقسام (Categories Chips) */
         .categories-container { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; background: white; border-bottom: 1px solid var(--border); }
@@ -97,6 +98,9 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; }
         .btn-submit { background: var(--primary); color: var(--dark); border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+        /* زر الدعم الفني العائم */
+        .support-float-btn { display: inline-flex; align-items: center; gap: 6px; background: #25d366; color: white; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
+
         /* Toast الإشعارات العائمة */
         #toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 12px 25px; border-radius: 8px; z-index: 9999; transform: translateY(100px); opacity: 0; transition: 0.3s; font-weight: bold; }
         #toast.show { transform: translateY(0); opacity: 1; }
@@ -104,7 +108,7 @@
 </head>
 <body>
 
-    <!-- شريط الإعلانات المتحرك (ميزة 3) -->
+    <!-- شريط الإعلانات المتحرك -->
     <div id="announcementBar"></div>
 
     <!-- رأس الصفحة -->
@@ -115,17 +119,15 @@
         </div>
     </header>
 
-    <!-- زر الرجوع (يظهر في الصفحات الفرعية) -->
+    <!-- زر الرجوع الذكي بين الصفحات -->
     <div class="back-btn-container">
-        <button class="back-btn" onclick="goBackToHome()"><i class="fas fa-arrow-right"></i> الرئيسية</button>
+        <button class="back-btn" onclick="goBackToHome()"><i class="fas fa-arrow-right"></i> الرجوع للرئيسية</button>
     </div>
 
     <!-- المحتوى الرئيسي: الصفحة الرئيسية -->
     <div id="page-home" class="container">
-        <!-- شريط الأقسام (ميزة 1) -->
-        <div class="categories-container" id="categoriesContainer">
-            <!-- سيتم ملء الأقسام ديناميكياً -->
-        </div>
+        <!-- شريط الأقسام -->
+        <div class="categories-container" id="categoriesContainer"></div>
 
         <div class="search-filter-bar" style="margin-top: 15px;">
             <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن منتج..." oninput="filterProducts()">
@@ -146,9 +148,7 @@
         </div>
 
         <h2>جميع المنتجات</h2>
-        <div class="products-grid" id="productsGrid" style="margin-top: 15px;">
-            <!-- يتم تعبئة المنتجات تلقائياً -->
-        </div>
+        <div class="products-grid" id="productsGrid" style="margin-top: 15px;"></div>
     </div>
 
     <!-- صفحة تسجيل الدخول والحساب -->
@@ -175,7 +175,7 @@
     <!-- صفحة الملف الشخصي -->
     <div id="page-profile" class="container hidden">
         <h2>حسابي الشخصي</h2>
-        <div style="display: flex; gap: 10px; margin: 15px 0;">
+        <div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
             <button class="admin-tab-btn active" id="tabUserOrders" onclick="switchUserTab('orders')">طلباتي</button>
             <button class="admin-tab-btn" id="tabUserWishlist" onclick="switchUserTab('wishlist')">المفضلة</button>
             <button class="admin-tab-btn" id="tabUserAddresses" onclick="switchUserTab('addresses')">العناوين</button>
@@ -230,7 +230,7 @@
             <div id="adminProductsList" style="background:white; padding:15px; border-radius:8px;"></div>
         </div>
 
-        <!-- قسم الأقسام (ميزة 1) -->
+        <!-- قسم الأقسام -->
         <div id="adminCategoriesSection" class="hidden">
             <form id="addCategoryForm" onsubmit="addNewCategory(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
                 <h3>إضافة قسم جديد (مثل: منزلية، إلكترونيات...)</h3>
@@ -240,7 +240,7 @@
             <div id="adminCategoriesList" style="background:white; padding:15px; border-radius:8px;"></div>
         </div>
 
-        <!-- قسم أكواد الخصم (ميزة 4) -->
+        <!-- قسم أكواد الخصم -->
         <div id="adminCouponsSection" class="hidden">
             <form id="addCouponForm" onsubmit="addNewCoupon(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
                 <h3>إنشاء كود خصم جديد</h3>
@@ -251,7 +251,7 @@
             <div id="adminCouponsList" style="background:white; padding:15px; border-radius:8px;"></div>
         </div>
 
-        <!-- قسم شريط الإعلانات (ميزة 3) -->
+        <!-- قسم شريط الإعلانات -->
         <div id="adminAnnouncementsSection" class="hidden">
             <form onsubmit="saveAnnouncement(event)" style="background:white; padding:15px; border-radius:8px;">
                 <h3>إدارة شريط الإعلانات المتحرك</h3>
