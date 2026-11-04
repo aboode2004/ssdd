@@ -9,6 +9,8 @@ let categories = [];
 let cart = JSON.parse(localStorage.getItem('store_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('store_wishlist')) || [];
 let currentUser = null;
+let currentModalProduct = null;
+let modalQty = 1;
 
 // تهيئة التطبيق عند التحميل
 document.addEventListener('DOMContentLoaded', () => {
@@ -135,15 +137,35 @@ function filterByPrice(order) {
     renderProducts(sorted);
 }
 
-function addToCart(productId) {
+function filterByRating() {
+    let sorted = [...products];
+    sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    renderProducts(sorted);
+}
+
+function toggleWishlist(productId) {
+    const index = wishlist.indexOf(productId);
+    if(index > -1) {
+        wishlist.splice(index, 1);
+        showToast('تم إزالة المنتج من المفضلة');
+    } else {
+        wishlist.push(productId);
+        showToast('تمت إضافة المنتج إلى المفضلة');
+    }
+    localStorage.setItem('store_wishlist', JSON.stringify(wishlist));
+    renderProducts();
+}
+
+// --- نظام السلة ---
+function addToCart(productId, quantity = 1) {
     const product = products.find(p => p.id === productId);
     if(!product) return;
     
     const existing = cart.find(item => item.id === productId);
     if(existing) {
-        existing.qty += 1;
+        existing.qty += quantity;
     } else {
-        cart.push({ ...product, qty: 1 });
+        cart.push({ ...product, qty: quantity });
     }
     
     saveCart();
@@ -162,8 +184,98 @@ function updateCartBadge() {
 }
 
 function toggleCart() {
-    // سيتم إظهار سلة المشتريات الجانبية
-    showToast('فتح السلة...');
+    const sidebar = document.getElementById('cartSidebar');
+    if(sidebar) {
+        sidebar.classList.toggle('active');
+        renderCartItems();
+    }
+}
+
+function renderCartItems() {
+    const container = document.getElementById('cartItems');
+    const footer = document.getElementById('cartFooter');
+    if(!container) return;
+    
+    if(cart.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:var(--gray); margin-top:20px;">السلة فارغة</p>';
+        if(footer) footer.style.display = 'none';
+        return;
+    }
+    
+    if(footer) footer.style.display = 'block';
+    let html = '';
+    let total = 0;
+    
+    cart.forEach((item, index) => {
+        let itemPrice = item.price - (item.price * (item.discount || 0) / 100);
+        total += itemPrice * item.qty;
+        html += `
+            <div class="cart-item-row">
+                <div>
+                    <div style="font-weight:bold; font-size:0.9rem;">${item.name}</div>
+                    <div style="font-size:0.8rem; color:var(--gray);">${itemPrice} د.ع × ${item.qty}</div>
+                </div>
+                <div>
+                    <button onclick="changeCartQty(${index}, 1)" class="btn-edit" style="padding:2px 6px;">+</button>
+                    <button onclick="changeCartQty(${index}, -1)" class="btn-delete" style="padding:2px 6px;">-</button>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+    const totalEl = document.getElementById('cartTotal');
+    if(totalEl) totalEl.innerText = total + ' د.ع';
+}
+
+function changeCartQty(index, change) {
+    cart[index].qty += change;
+    if(cart[index].qty <= 0) {
+        cart.splice(index, 1);
+    }
+    saveCart();
+    renderCartItems();
+}
+
+function openCheckout() {
+    toggleCart();
+    const modal = document.getElementById('checkoutModal');
+    if(modal) {
+        modal.classList.add('active');
+        calculateCheckoutTotals();
+    }
+}
+
+function calculateCheckoutTotals() {
+    let subtotal = cart.reduce((sum, item) => {
+        let p = item.price - (item.price * (item.discount || 0) / 100);
+        return sum + (p * item.qty);
+    }, 0);
+    
+    const subtotalEl = document.getElementById('chkSubtotal');
+    const totalEl = document.getElementById('chkTotal');
+    if(subtotalEl) subtotalEl.innerText = subtotal + ' د.ع';
+    if(totalEl) totalEl.innerText = subtotal + ' د.ع';
+}
+
+function submitOrder(e) {
+    e.preventDefault();
+    const name = document.getElementById('orderName').value;
+    const phone = document.getElementById('orderPhone').value;
+    
+    if(!name || !phone) {
+        showToast('يرجى ملء الحقول الإجبارية');
+        return;
+    }
+    
+    closeModal('checkoutModal');
+    const invoiceModal = document.getElementById('invoiceModal');
+    const invoiceId = document.getElementById('invoiceId');
+    if(invoiceId) invoiceId.innerText = '#' + Math.floor(1000 + Math.random() * 9000);
+    if(invoiceModal) invoiceModal.classList.add('active');
+    
+    // تفريغ السلة بعد الطلب
+    cart = [];
+    saveCart();
 }
 
 function showToast(msg) {
@@ -202,16 +314,62 @@ function checkAuthStatus() {
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
+    const modal = document.getElementById(modalId);
+    if(modal) modal.classList.remove('active');
 }
 
 function openProductModal(id) {
     const p = products.find(item => item.id === id);
     if(!p) return;
+    currentModalProduct = p;
+    modalQty = 1;
+    
     document.getElementById('modalTitle').innerText = p.name;
     document.getElementById('modalPrice').innerText = (p.price - (p.price * (p.discount || 0) / 100)) + ' د.ع';
     document.getElementById('modalIcon').innerHTML = `<i class="fa-solid ${p.icon || 'fa-box'}"></i>`;
+    document.getElementById('modalQty').innerText = modalQty;
     document.getElementById('productModal').classList.add('active');
+}
+
+function changeModalQty(change) {
+    modalQty += change;
+    if(modalQty < 1) modalQty = 1;
+    const qtyEl = document.getElementById('modalQty');
+    if(qtyEl) qtyEl.innerText = modalQty;
+}
+
+function addToCartFromModal() {
+    if(currentModalProduct) {
+        addToCart(currentModalProduct.id, modalQty);
+        closeModal('productModal');
+    }
+}
+
+function buyNowFromModal() {
+    if(currentModalProduct) {
+        addToCart(currentModalProduct.id, modalQty);
+        closeModal('productModal');
+        openCheckout();
+    }
+}
+
+function switchAuthTab(tab) {
+    const tabLogin = document.getElementById('tabLogin');
+    const tabSignup = document.getElementById('tabSignup');
+    const formLogin = document.getElementById('formLogin');
+    const formSignup = document.getElementById('formSignup');
+    
+    if(tab === 'login') {
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+        formLogin.classList.remove('hidden');
+        formSignup.classList.add('hidden');
+    } else {
+        tabSignup.classList.add('active');
+        tabLogin.classList.remove('active');
+        formSignup.classList.remove('hidden');
+        formLogin.classList.add('hidden');
+    }
 }
 
 function handleLogin(e) {
@@ -250,7 +408,11 @@ function switchAdminTab(tabName) {
 }
 
 function renderAdminDashboard() {
-    document.getElementById('statProductsCount').innerText = products.length;
-    document.getElementById('statOrders').innerText = '0';
-    document.getElementById('statSales').innerText = '0 د.ع';
+    const countEl = document.getElementById('statProductsCount');
+    const ordersEl = document.getElementById('statOrders');
+    const salesEl = document.getElementById('statSales');
+    
+    if(countEl) countEl.innerText = products.length;
+    if(ordersEl) ordersEl.innerText = '0';
+    if(salesEl) salesEl.innerText = '0 د.ع';
 }
