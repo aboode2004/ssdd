@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>متجر يساعدكم</title>
-    <!-- مكتبة الأيقونات والخطوط -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة الأيقونات الفونت أوسوم الحديثة -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,15 +27,18 @@
         body { background: var(--light); color: var(--dark); direction: rtl; }
         .hidden { display: none !important; }
         
-        /* شريط التنقل العلوي */
-        header { background: var(--dark); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); cursor: pointer; }
-        .nav-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
-        .nav-btn { background: transparent; border: 1px solid var(--primary); color: white; padding: 6px 15px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        /* شريط التنقل العلوي مع تقارب الأزرار */
+        header { background: var(--dark); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px; }
+        .logo { font-size: 1.4rem; font-weight: bold; color: var(--primary); cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .nav-actions { display: flex; gap: 6px; align-items: center; flex-wrap: nowrap; justify-content: flex-end; }
+        .nav-btn { background: transparent; border: 1px solid var(--primary); color: white; padding: 5px 12px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
         .nav-btn:hover { background: var(--primary); color: var(--dark); }
         .nav-btn-login { background: var(--primary); color: var(--dark); font-weight: bold; }
         .nav-btn-cart { position: relative; }
-        .cart-count { background: var(--red); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; position: absolute; top: -5px; right: -5px; }
+        .cart-count { background: var(--red); color: white; border-radius: 50%; padding: 1px 5px; font-size: 0.7rem; position: absolute; top: -5px; right: -5px; }
+
+        /* زر الداعم الفني المنسق */
+        .support-float-btn { display: inline-flex; align-items: center; gap: 5px; background: #25d366; color: white; padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; font-weight: bold; white-space: nowrap; }
 
         /* زر الرجوع بين الصفحات */
         .back-btn-container { padding: 15px 20px 0 20px; }
@@ -49,9 +52,13 @@
 
         /* المحتوى الرئيسي */
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .search-input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
-        .filter-select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; background: white; cursor: pointer; }
+        
+        /* شريط البحث والفلترة المرتب جنباً إلى جنب */
+        .search-filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .search-input { flex: 1; min-width: 200px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; background: white; }
+        
+        .filters-group { display: flex; gap: 10px; flex-wrap: nowrap; }
+        .filter-select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; background: white; cursor: pointer; font-size: 0.9rem; }
 
         /* شبكة المنتجات */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
@@ -76,7 +83,7 @@
         .cart-footer { padding: 20px; background: var(--light); border-top: 1px solid var(--border); }
         .checkout-btn { background: var(--primary); color: var(--dark); border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
 
-        /* النوافذ المنخفضة (Modals) */
+        /* النوافذ المنبثقة (Modals) */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 12px; max-height: 90vh; overflow-y: auto; position: relative; }
@@ -98,9 +105,6 @@
         .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none; }
         .btn-submit { background: var(--primary); color: var(--dark); border: none; padding: 10px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* زر الداعم الفني */
-        .support-float-btn { display: inline-flex; align-items: center; gap: 6px; background: #25d366; color: white; padding: 6px 12px; border-radius: 20px; text-decoration: none; font-size: 0.85rem; font-weight: bold; }
-
         /* Toast الإشعارات العائمة */
         #toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: white; padding: 12px 25px; border-radius: 8px; z-index: 9999; transform: translateY(100px); opacity: 0; transition: 0.3s; font-weight: bold; }
         #toast.show { transform: translateY(0); opacity: 1; }
@@ -113,7 +117,7 @@
 
     <!-- رأس الصفحة -->
     <header>
-        <div class="logo" onclick="showPage('home')">متجر يساعدكم 🛍️</div>
+        <div class="logo" onclick="showPage('home')"><i class="fa-solid fa-bag-shopping"></i> متجر يساعدكم</div>
         <div class="nav-actions" id="navActions">
             <!-- يتم تعبئتها ديناميكياً حسب حالة تسجيل الدخول -->
         </div>
@@ -121,29 +125,32 @@
 
     <!-- زر الرجوع بين الصفحات -->
     <div class="back-btn-container">
-        <button class="back-btn" onclick="goBackToHome()"><i class="fas fa-arrow-right"></i> الرجوع للرئيسية</button>
+        <button class="back-btn" onclick="goBackToHome()"><i class="fa-solid fa-arrow-right"></i> الرجوع للرئيسية</button>
     </div>
 
     <!-- المحتوى الرئيسي: الصفحة الرئيسية -->
     <div id="page-home" class="container">
-        <!-- شريط الأقسام (منزلية وغيرها) -->
+        <!-- شريط الأقسام -->
         <div class="categories-container" id="categoriesContainer"></div>
 
+        <!-- شريط البحث والفلترة (تم الترتيب جنباً إلى جنب) -->
         <div class="search-filter-bar" style="margin-top: 15px;">
             <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن منتج..." oninput="filterProducts()">
-            <select class="filter-select" onchange="filterByPrice(this.value)">
-                <option value="">ترتيب حسب السعر</option>
-                <option value="low">الأرخص أولاً</option>
-                <option value="high">الأغلى أولاً</option>
-            </select>
-            <select class="filter-select" onchange="filterByRating()">
-                <option value="">الأعلى تقييماً</option>
-            </select>
+            <div class="filters-group">
+                <select class="filter-select" onchange="filterByPrice(this.value)">
+                    <option value="">ترتيب حسب السعر</option>
+                    <option value="low">الأرخص أولاً</option>
+                    <option value="high">الأغلى أولاً</option>
+                </select>
+                <select class="filter-select" onchange="filterByRating()">
+                    <option value="">الأعلى تقييماً</option>
+                </select>
+            </div>
         </div>
 
         <!-- المنتجات المشاهدة مؤخراً -->
         <div id="recentlyViewedSection" class="hidden" style="margin-bottom: 25px;">
-            <h3 style="margin-bottom: 10px;">شاهدته مؤخراً 👀</h3>
+            <h3 style="margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> شاهدته مؤخراً</h3>
             <div id="recentlyViewedList" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;"></div>
         </div>
 
@@ -233,7 +240,7 @@
         <!-- قسم الأقسام -->
         <div id="adminCategoriesSection" class="hidden">
             <form id="addCategoryForm" onsubmit="addNewCategory(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3>إضافة قسم جديد (مثل: منزلية، إلكترونيات...)</h3>
+                <h3>إضافة قسم جديد</h3>
                 <div class="form-group"><label>اسم القسم</label><input type="text" id="newCategoryName" class="form-control" required></div>
                 <button type="submit" class="btn-submit">إضافة القسم</button>
             </form>
@@ -244,8 +251,8 @@
         <div id="adminCouponsSection" class="hidden">
             <form id="addCouponForm" onsubmit="addNewCoupon(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
                 <h3>إنشاء كود خصم جديد</h3>
-                <div class="form-group"><label>رمز الكود (مثال: SAVE20)</label><input type="text" id="newCouponCode" class="form-control" required></div>
-                <div class="form-group"><label>قيمة الخصم (نسبة مثل 0.10 أو مبلغ مثل 5000)</label><input type="number" step="any" id="newCouponDiscount" class="form-control" required></div>
+                <div class="form-group"><label>رمز الكود</label><input type="text" id="newCouponCode" class="form-control" required></div>
+                <div class="form-group"><label>قيمة الخصم</label><input type="number" step="any" id="newCouponDiscount" class="form-control" required></div>
                 <button type="submit" class="btn-submit">حفظ الكود</button>
             </form>
             <div id="adminCouponsList" style="background:white; padding:15px; border-radius:8px;"></div>
@@ -255,7 +262,7 @@
         <div id="adminAnnouncementsSection" class="hidden">
             <form onsubmit="saveAnnouncement(event)" style="background:white; padding:15px; border-radius:8px;">
                 <h3>إدارة شريط الإعلانات المتحرك</h3>
-                <div class="form-group"><label>نص الإعلان</label><input type="text" id="announcementTextInput" class="form-control" placeholder="اكتب نص الإعلان هنا..." required></div>
+                <div class="form-group"><label>نص الإعلان</label><input type="text" id="announcementTextInput" class="form-control" required></div>
                 <button type="submit" class="btn-submit">تحديث الشريط</button>
             </form>
         </div>
@@ -303,7 +310,6 @@
         <div id="adminReportsSection" class="hidden">
             <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
                 <h3>تصدير تقارير الطلبات</h3>
-                <p style="color:var(--gray); margin:10px 0;">تصدير كافة بيانات الطلبات بصيغة CSV لبرنامج Excel</p>
                 <button onclick="exportOrdersCSV()" class="btn-submit" style="max-width:200px; margin:0 auto;">تصدير الطلبات (CSV)</button>
             </div>
         </div>
@@ -329,7 +335,7 @@
             <h4>التقييمات</h4>
             <div id="reviewsList" style="margin: 10px 0; max-height: 150px; overflow-y: auto;"></div>
             <form id="reviewForm" class="hidden" onsubmit="submitReview(event)" style="margin-top: 10px;">
-                <div class="form-group"><label>التقييم (1-5)</label><select id="reviewRating" class="form-control"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select></div>
+                <div class="form-group"><label>التقييم</label><select id="reviewRating" class="form-control"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select></div>
                 <div class="form-group"><label>تعليقك</label><input type="text" id="reviewComment" class="form-control" required></div>
                 <button type="submit" class="btn-submit">إرسال التقييم</button>
             </form>
@@ -339,7 +345,7 @@
         </div>
     </div>
 
-    <!-- نافذة إتمام الطلب (Checkout) -->
+    <!-- نافذة إتمام الطلب -->
     <div class="modal" id="checkoutModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('checkoutModal')">&times;</button>
@@ -351,7 +357,7 @@
                 <div class="form-group">
                     <label>كود الخصم</label>
                     <div style="display: flex; gap: 5px;">
-                        <input type="text" id="couponCode" class="form-control" placeholder="أدخل كود الخصم">
+                        <input type="text" id="couponCode" class="form-control" placeholder="أدخل الكود">
                         <button type="button" onclick="applyCoupon()" class="btn-edit">تطبيق</button>
                     </div>
                 </div>
@@ -369,10 +375,9 @@
     <!-- نافذة الفاتورة والنجاح -->
     <div class="modal" id="invoiceModal">
         <div class="modal-content" style="text-align: center;">
-            <div style="font-size: 3rem; color: var(--green); margin-bottom: 10px;">✔️</div>
+            <div style="font-size: 3rem; color: var(--green); margin-bottom: 10px;"><i class="fa-solid fa-circle-check"></i></div>
             <h2>تم إرسال طلبك بنجاح!</h2>
             <p style="margin: 10px 0; color: var(--gray);">رقم الفاتورة: <b id="invoiceId">#0</b></p>
-            <p style="font-size: 0.9rem; margin-bottom: 20px;">سيتم التواصل معك قريباً لتأكيد تفاصيل التوصيل.</p>
             <button onclick="closeModal('invoiceModal'); showPage('home');" class="btn-submit">العودة للرئيسية</button>
         </div>
     </div>
@@ -384,21 +389,36 @@
             <h3>تحديد وقت وتكلفة التوصيل</h3>
             <form onsubmit="saveDeliveryDetails(event)" style="margin-top: 15px;">
                 <input type="hidden" id="deliveryOrderId">
-                <div class="form-group"><label>وقت التوصيل المقدر</label><input type="text" id="deliveryTimeInput" class="form-control" required></div>
+                <div class="form-group"><label>وقت التوصيل</label><input type="text" id="deliveryTimeInput" class="form-control" required></div>
                 <div class="form-group"><label>تكلفة التوصيل (د.ع)</label><input type="number" id="deliveryCostInput" class="form-control" required></div>
                 <button type="submit" class="btn-submit">حفظ وقبول الطلب</button>
             </form>
         </div>
     </div>
 
+    <!-- سلة المشتريات الجانبية -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>سلة المشتريات</h3>
+            <button onclick="toggleCart()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer" id="cartFooter" style="display:none;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold;">
+                <span>المجموع:</span>
+                <span id="cartTotal">0 د.ع</span>
+            </div>
+            <button class="checkout-btn" onclick="openCheckout()">إتمام الشراء</button>
+        </div>
+    </div>
+
     <!-- قسم الطباعة المخفي للبوليصة -->
     <div id="printSection" style="display: none;"></div>
 
-    <!-- عنصر الإشعارات العائمة Toast -->
+    <!-- عنصر الإشعارات العائمة -->
     <div id="toast"></div>
 
-    <!-- ربط ملف الـ JavaScript هنا -->
+    <!-- ربط ملف الـ JavaScript الخارجي -->
     <script src="script.js"></script>
-
 </body>
 </html>
