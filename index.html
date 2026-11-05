@@ -1,323 +1,532 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر يساعدكم</title>
-    <!-- مكتبة الأيقونات FontAwesome 6 الحديثة -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- مكتبة Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- ربط ملف الـ CSS الخارجي -->
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>يساعدكم | متجر نينوى الإلكتروني</title>
+<meta property="og:title" content="متجر يساعدكم | أفضل المنتجات في نينوى">
+<meta property="og:description" content="تسوق الآن أفضل المنتجات المنزلية والإلكترونية بأفضل الأسعار. توصيل سريع وخدمة ممتازة.">
+<meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3081/3081559.png">
+<meta property="og:url" content="https://aboode2004.github.io/xxzz/">
+<meta property="og:type" content="website">
+<link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--orange:#fea621;--orange-dark:#e69500;--purple-dark:rgb(16,2,35);--purple-mid:rgb(43,23,90);--white:#fff;--black:#1a1a1a;--gray:#6c757d;--gray-light:#f8f9fa;--border:#e9ecef;--shadow:0 2px 10px rgba(0,0,0,.07);--red:#dc3545;--green:#28a745;--blue:#007bff;--pink:#e91e63;--whatsapp:#25d366}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--black);line-height:1.7; transition: background-color 0.3s, color 0.3s;}
+.navbar{background:var(--white);box-shadow:var(--shadow);padding:12px 0;position:sticky;top:0;z-index:1000}
+.navbar-inner{max-width:1400px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.logo{font-size:1.6rem;font-weight:900;color:var(--orange);text-decoration:none;cursor:pointer}
+.search-box{flex:1;display:flex;background:var(--gray-light);border-radius:50px}
+.search-box input{flex:1;border:none;padding:12px 20px;background:transparent;font-family:inherit;outline:none}
+.search-box button{background:var(--orange);color:var(--white);border:none;padding:0 25px;cursor:pointer;border-radius:0 50px 50px 0}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.nav-btn{padding:10px 18px;border-radius:50px;font-weight:700;border:2px solid transparent;cursor:pointer;background:none;font-family:inherit}
+.nav-btn-login{color:var(--orange);border-color:var(--orange)}
+.nav-btn-cart{background:var(--orange);color:var(--white)}
+.cart-count{background:var(--purple-dark);color:var(--white);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem}
+.hero{background:linear-gradient(90deg,var(--purple-dark) 21%,var(--purple-mid) 76%);color:var(--white);padding:80px 20px;text-align:center}
+.hero h1{font-size:3rem;font-weight:900}
+.hero h1 span{color:var(--orange)}
+.section{max-width:1400px;margin:0 auto;padding:50px 20px}
+.section-title{font-size:1.8rem;font-weight:900;margin-bottom:30px;border-right:6px solid var(--orange);padding-right:10px}
+.filter-bar{display:flex; gap:10px; margin-bottom:20px; overflow-x:auto; padding-bottom:10px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.product-card{background:var(--white);border-radius:15px;padding:18px;display:flex;flex-direction:column;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.2s;position:relative}
+.product-card:hover{transform:translateY(-5px)}
+.product-image{height:150px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--gray-light);border-radius:10px;margin-bottom:15px;background-size:cover;background-position:center}
+.product-title{font-size:1.1rem;font-weight:700}
+.product-price{font-size:1.3rem;font-weight:900;color:var(--orange);margin:5px 0}
+.old-price{font-size:0.9rem;color:var(--gray);text-decoration:line-through;margin-left:5px}
+.discount-badge{position:absolute;top:10px;right:10px;background:var(--red);color:white;padding:3px 8px;border-radius:5px;font-size:0.8rem;font-weight:bold;z-index:2}
+.countdown-badge { background: rgba(220, 53, 69, 0.1); color: var(--red); padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: bold; display: inline-block; margin-bottom: 10px; border: 1px solid rgba(220,53,69,0.3); }
+.wishlist-btn{position:absolute;top:10px;left:10px;background:white;border:none;border-radius:50%;width:35px;height:35px;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);color:var(--gray);transition:0.2s}
+.wishlist-btn.active{color:var(--pink)}
+.add-to-cart{background:var(--orange);color:var(--white);border:none;padding:12px;border-radius:10px;cursor:pointer;font-weight:bold}
+.auth-wrapper{max-width:450px;margin:40px auto;background:var(--white);border-radius:20px;padding:30px;box-shadow:var(--shadow)}
+.auth-tabs{display:flex;background:var(--gray-light);border-radius:50px;padding:5px;margin-bottom:20px}
+.auth-tab{flex:1;padding:12px;border:none;background:none;cursor:pointer;border-radius:50px;font-family:inherit;font-weight:bold}
+.auth-tab.active{background:var(--orange);color:var(--white)}
+.form-control{width:100%;padding:13px;border:2px solid var(--border);border-radius:10px;margin-bottom:15px;font-family:inherit; background:var(--white); color:var(--black);}
+.auth-btn{width:100%;padding:14px;background:var(--orange);color:var(--white);border:none;border-radius:10px;cursor:pointer;font-family:inherit;font-weight:bold}
+.cart-sidebar{position:fixed;top:0;left:-450px;width:100%;max-width:450px;height:100vh;background:var(--white);z-index:4000;transition:0.3s;display:flex;flex-direction:column;box-shadow:5px 0 15px rgba(0,0,0,0.1)}
+.cart-sidebar.active{left:0}
+.cart-header{padding:20px;background:var(--purple-dark);color:var(--white);display:flex;justify-content:space-between}
+.cart-items{flex:1;overflow-y:auto;padding:20px}
+.cart-item-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px}
+.cart-footer{padding:20px;border-top:2px solid var(--border)}
+.checkout-btn{width:100%;background:var(--orange);color:var(--white);padding:15px;border:none;border-radius:10px;cursor:pointer;font-weight:bold}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--white);border-radius:20px;max-width:500px;width:100%;padding:30px;position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:15px;left:15px;background:none;border:none;font-size:1.5rem;cursor:pointer; color:var(--black);}
+.review-item{background:var(--gray-light);padding:10px;border-radius:10px;margin-bottom:10px}
+.stars{color:#ffc107}
+.toast{position:fixed;bottom:30px;left:50%;transform:translate(-50%,100px);background:var(--green);color:var(--white);padding:15px 25px;border-radius:50px;z-index:6000;transition:.4s;opacity:0; text-align:center;}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.hidden{display:none !important}
+.input-group{position:relative;margin-bottom:15px}
+.eye-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--gray)}
+.admin-tabs{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.admin-tab{flex:1;padding:12px;background:var(--white);border:2px solid var(--border);border-radius:10px;cursor:pointer;font-family:inherit;font-weight:bold;text-align:center;min-width:110px; color:var(--black);}
+.admin-tab.active{background:var(--orange);color:var(--white);border-color:var(--orange)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:15px;margin-bottom:20px}
+.stat-card{background:var(--white);padding:15px;border-radius:15px;text-align:center;box-shadow:var(--shadow);border-top:4px solid var(--orange)}
+.stat-card h3{font-size:1.8rem;color:var(--orange);margin-bottom:5px}
+.order-card{background:var(--white);padding:15px;border-radius:10px;margin-bottom:15px;border-right:5px solid var(--orange);box-shadow:var(--shadow)}
+.order-header{display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:10px;font-weight:bold;flex-wrap:wrap;gap:10px}
+.order-details{font-size:0.9rem;color:var(--gray);line-height:1.8}
+.order-actions{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.btn-delete{background:var(--red);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:0.8rem}
+.btn-edit{background:var(--orange);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:0.8rem}
+.btn-accept{background:var(--green);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:0.8rem}
+.btn-reject{background:var(--red);color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-family:inherit;font-size:0.8rem}
+.admin-search{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;margin-bottom:15px;font-family:inherit; background:var(--white); color:var(--black);}
+.status-track{display:flex;justify-content:space-between;margin-top:15px;position:relative}
+.status-track::before{content:'';position:absolute;top:10px;left:0;right:0;height:3px;background:var(--border);z-index:1}
+.status-step{position:relative;z-index:2;text-align:center;font-size:0.75rem;color:var(--gray);width:33%}
+.status-step.active{color:var(--green);font-weight:bold}
+.status-dot{width:20px;height:20px;background:var(--border);border-radius:50%;margin:0 auto 5px auto}
+.status-step.active .status-dot{background:var(--green)}
+.buy-now-btn{background:var(--purple-dark);color:var(--white);border:none;padding:12px;border-radius:10px;cursor:pointer;font-weight:bold;margin-bottom:10px;width:100%}
+.scroll-row{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px}
+.scroll-row .product-card{min-width:200px;max-width:200px}
+.address-card{background:var(--white);padding:15px;border-radius:10px;margin-bottom:10px;border:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.whatsapp-float{position:fixed;bottom:20px;left:20px;background:var(--whatsapp);color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;z-index:5000;box-shadow:0 4px 10px rgba(0,0,0,0.3);text-decoration:none;transition:0.3s}
+.whatsapp-float:hover{transform:scale(1.1)}
+.btn-stock{width:28px;height:28px;border:none;background:var(--purple-dark);color:white;border-radius:5px;cursor:pointer;font-weight:bold;font-size:1rem;}
+#social-proof-container { position: fixed; bottom: 20px; right: 20px; z-index: 5500; display: flex; flex-direction: column; gap: 10px; }
+.social-proof-toast { background: var(--white); border-right: 4px solid var(--green); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; transform: translateX(120%); transition: 0.5s; max-width: 300px; font-size: 0.85rem; }
+.social-proof-toast.show { transform: translateX(0); }
+.social-proof-toast img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
+@media print { body * { visibility: hidden; } #printSection, #printSection * { visibility: visible; } #printSection { position: absolute; left: 0; top: 0; width: 100%; } }
+[data-theme="dark"] { --white: #18181b; --black: #f4f4f5; --gray-light: #09090b; --border: #27272a; --gray: #a1a1aa; --purple-dark: #000000; }
+[data-theme="dark"] .modal-close { color: var(--black); }
+[data-theme="dark"] .wishlist-btn { background: var(--white); color: var(--black); }
+[data-theme="dark"] .social-proof-toast { background: var(--surface); color: var(--black); }
+</style>
 </head>
 <body>
 
-    <!-- شريط الإعلانات المتحرك -->
-    <div id="announcementBar"></div>
+<div id="social-proof-container"></div>
 
-    <!-- رأس الصفحة (الهيدر) -->
-    <header>
-        <div class="logo" onclick="showPage('home')"><i class="fa-solid fa-bag-shopping"></i> متجر يساعدكم</div>
-        <div class="nav-actions" id="navActions">
-            <!-- يتم تعبئتها ديناميكياً -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="logo" onclick="showPage('home')"><i class="fas fa-hand-holding-heart"></i> يساعدكم</a>
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ابحث..." onkeyup="filterProducts()">
+            <button onclick="filterProducts()"><i class="fas fa-search"></i></button>
         </div>
-    </header>
-
-    <!-- زر الرجوع بين الصفحات -->
-    <div class="back-btn-container">
-        <button class="back-btn" onclick="goBackToHome()"><i class="fa-solid fa-arrow-right"></i> الرجوع للرئيسية</button>
+        <div style="display:flex; gap:10px; align-items:center;">
+            <button onclick="toggleTheme()" id="themeToggleBtn" style="background:none; border:none; cursor:pointer; font-size:1.3rem; color:var(--black);">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <div class="nav-actions" id="navActions"></div>
+        </div>
     </div>
+</nav>
 
-    <!-- المحتوى الرئيسي: الصفحة الرئيسية -->
-    <div id="page-home" class="container">
-        <!-- شريط الأقسام -->
-        <div class="categories-container" id="categoriesContainer"></div>
+<div id="backButtonContainer" style="display:none; max-width:1400px; margin:10px auto; padding:0 20px;">
+    <button onclick="goBack()" style="background:var(--purple-dark); color:white; border:none; padding:8px 15px; border-radius:10px; font-family:inherit; font-weight:bold; cursor:pointer;">
+        <i class="fas fa-arrow-right"></i> رجوع
+    </button>
+</div>
 
-        <!-- شريط البحث والفلترة (مرتب جنباً إلى جنب) -->
-        <div class="search-filter-bar">
-            <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن منتج..." oninput="filterProducts()">
-            <div class="filters-group">
-                <select class="filter-select" onchange="filterByPrice(this.value)">
-                    <option value="">ترتيب حسب السعر</option>
-                    <option value="low">الأرخص أولاً</option>
-                    <option value="high">الأغلى أولاً</option>
-                </select>
-                <select class="filter-select" onchange="filterByRating()">
-                    <option value="">الأعلى تقييماً</option>
-                </select>
+<div id="marqueeBar" style="background:var(--purple-dark); color:var(--white); padding:8px 0; overflow:hidden; font-weight:bold;">
+    <marquee id="marqueeText" direction="right" scrollamount="6" style="font-size:1rem;"></marquee>
+</div>
+
+<div id="page-home">
+    <div class="hero"><h1>أفضل المنتجات في <span>نينوى</span> 🛍️</h1></div>
+    <div class="section">
+        <h2 class="section-title">منتجاتنا</h2>
+        <div class="filter-bar" id="categoryFilterBar" style="flex-wrap:wrap;">
+            <button class="nav-btn nav-btn-login active" onclick="filterByCategory('all', this)">الكل</button>
+        </div>
+        <div class="filter-bar">
+            <button class="nav-btn nav-btn-login" onclick="filterByPrice('low')">الأرخص</button>
+            <button class="nav-btn nav-btn-login" onclick="filterByPrice('high')">الأغلى</button>
+            <button class="nav-btn nav-btn-login" onclick="filterByRating()">الأعلى تقييماً</button>
+        </div>
+        <div class="products-grid" id="productsGrid">جاري التحميل...</div>
+    </div>
+</div>
+
+<div id="page-about" class="hidden">
+    <div class="section" style="max-width: 800px;">
+        <h2 class="section-title">من نحن</h2>
+        <div style="background:var(--white); padding:30px; border-radius:15px; box-shadow:var(--shadow);">
+            <p style="margin-bottom:15px; font-size:1.1rem;">مرحباً بك في <strong>متجر يساعدكم</strong>، وجهتك الأولى للتسوق الإلكتروني في نينوى والعراق.</p>
+            <p style="margin-bottom:15px; line-height:2;">نحن نسعى جاهدين لتوفير أفضل المنتجات المنزلية والإلكترونية بأسعار تنافسية، مع ضمان جودة عالية وخدمة توصيل سريعة تصل إلى باب منزلك. هدفنا هو راحة الزبون وأمانة التعامل.</p>
+            <h3 style="margin-top:30px; margin-bottom:15px; color:var(--orange);">سياسة الاستبدال والاسترجاع</h3>
+            <ul style="line-height:2; padding-right:20px;">
+                <li>يحق للزبون استبدال المنتج أو استرجاعه خلال 3 أيام من تاريخ الاستلام.</li>
+                <li>يجب أن يكون المنتج بحالته الأصلية وبدون أي تلف أو استخدام.</li>
+                <li>في حال كان المنتج تالفاً عند الاستلام، يتحمل المتجر تكلفة الاسترجاع والتبديل.</li>
+                <li>لا يمكن استرجاع المنتجات التي تم كسرها بسبب سوء الاستخدام من قبل الزبون.</li>
+            </ul>
+            <button onclick="showPage('home')" class="auth-btn" style="margin-top:30px;">العودة للرئيسية</button>
+        </div>
+    </div>
+</div>
+
+<div id="page-auth" class="hidden">
+    <div class="auth-wrapper">
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">دخول</button>
+            <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">حساب جديد</button>
+        </div>
+        <form id="formLogin" onsubmit="handleLogin(event)">
+            <input type="email" id="loginEmail" class="form-control" placeholder="البريد الإلكتروني" required style="padding-left: 13px;">
+            <div class="input-group">
+                <input type="password" id="loginPassword" class="form-control" placeholder="كلمة المرور" required>
+                <i class="fas fa-eye eye-icon" onclick="togglePassword('loginPassword', this)"></i>
             </div>
-        </div>
-
-        <!-- المنتجات المشاهدة مؤخراً -->
-        <div id="recentlyViewedSection" class="hidden" style="margin-bottom: 25px;">
-            <h3 style="margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> شاهدته مؤخراً</h3>
-            <div id="recentlyViewedList" style="display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px;"></div>
-        </div>
-
-        <h2>جميع المنتجات</h2>
-        <div class="products-grid" id="productsGrid" style="margin-top: 15px;"></div>
-    </div>
-
-    <!-- صفحة تسجيل الدخول والحساب -->
-    <div id="page-auth" class="container hidden" style="max-width: 400px; margin-top: 40px;">
-        <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <div style="display: flex; margin-bottom: 20px; border-bottom: 1px solid var(--border);">
-                <button id="tabLogin" class="admin-tab-btn active" style="flex:1; border-radius:0;" onclick="switchAuthTab('login')">تسجيل دخول</button>
-                <button id="tabSignup" class="admin-tab-btn" style="flex:1; border-radius:0;" onclick="switchAuthTab('signup')">حساب جديد</button>
+            <button type="submit" class="auth-btn" id="btnLogin">دخول</button>
+        </form>
+        <form id="formSignup" class="hidden" onsubmit="handleSignup(event)">
+            <input type="text" id="signupName" class="form-control" placeholder="الاسم الكامل" required style="padding-left: 13px;">
+            <input type="email" id="signupEmail" class="form-control" placeholder="البريد الإلكتروني" required style="padding-left: 13px;">
+            <div class="input-group">
+                <input type="password" id="signupPassword" class="form-control" placeholder="كلمة المرور (6 أحرف)" required minlength="6">
+                <i class="fas fa-eye eye-icon" onclick="togglePassword('signupPassword', this)"></i>
             </div>
-            <form id="formLogin" onsubmit="handleLogin(event)">
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="loginEmail" class="form-control" required></div>
-                <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPassword" class="form-control" required></div>
-                <button type="submit" class="btn-submit" id="btnLogin">دخول</button>
-            </form>
-            <form id="formSignup" class="hidden" onsubmit="handleSignup(event)">
-                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="signupName" class="form-control" required></div>
-                <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="signupEmail" class="form-control" required></div>
-                <div class="form-group"><label>كلمة المرور</label><input type="password" id="signupPassword" class="form-control" required></div>
-                <button type="submit" class="btn-submit" id="btnSignup">إنشاء حساب</button>
-            </form>
-        </div>
+            <button type="submit" class="auth-btn" id="btnSignup">إنشاء حساب</button>
+        </form>
     </div>
+</div>
 
-    <!-- صفحة الملف الشخصي -->
-    <div id="page-profile" class="container hidden">
-        <h2>حسابي الشخصي</h2>
-        <div style="display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap;">
-            <button class="admin-tab-btn active" id="tabUserOrders" onclick="switchUserTab('orders')">طلباتي</button>
-            <button class="admin-tab-btn" id="tabUserWishlist" onclick="switchUserTab('wishlist')">المفضلة</button>
-            <button class="admin-tab-btn" id="tabUserAddresses" onclick="switchUserTab('addresses')">العناوين</button>
-            <button class="admin-tab-btn" id="tabUserSecurity" onclick="switchUserTab('security')">الأمان</button>
+<div id="page-profile" class="hidden">
+    <div class="section">
+        <h2 class="section-title">حسابي</h2>
+        <div style="background:var(--white); padding:20px; border-radius:15px; margin-bottom:20px; text-align:center;">
+            <div style="width:70px; height:70px; background:var(--orange); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2rem; margin:0 auto 10px auto;" id="profileAvatar">U</div>
+            <h3 id="profileUsername" style="color:var(--orange);"></h3>
+            <p id="profileName" style="font-weight:bold;"></p>
+            <p id="profileEmail" style="color:var(--gray); font-size:0.9rem;"></p>
+            <div style="background:var(--orange-light,#fff8ec); padding:10px; border-radius:10px; margin-top:10px; display:flex; justify-content:center; align-items:center; gap:10px;">
+                <i class="fas fa-star" style="color:gold; font-size:1.5rem;"></i>
+                <span style="font-weight:bold; font-size:1.2rem;" id="profilePoints">0</span> نقطة
+            </div>
+            <button onclick="handleLogout()" class="auth-btn" style="background:var(--red); margin-top:15px;">تسجيل الخروج</button>
         </div>
-        <div id="userOrdersSection"></div>
-        <div id="userWishlistSection" class="hidden"><div class="products-grid" id="wishlistGrid"></div></div>
-        <div id="userAddressesSection" class="hidden"><div id="addressesList"></div></div>
+        <div class="admin-tabs" style="margin-bottom:15px;">
+            <button class="admin-tab active" id="tabUserOrders" onclick="switchUserTab('orders')">طلباتي</button>
+            <button class="admin-tab" id="tabUserWishlist" onclick="switchUserTab('wishlist')">المفضلة ❤️</button>
+            <button class="admin-tab" id="tabUserAddresses" onclick="switchUserTab('addresses')">عناويني 🏠</button>
+            <button class="admin-tab" id="tabUserSecurity" onclick="switchUserTab('security')">الأمان 🔑</button>
+        </div>
+        <div id="userOrdersSection"><h2 class="section-title">سجل الطلبات</h2><div id="ordersList"></div></div>
+        <div id="userWishlistSection" class="hidden"><h2 class="section-title">المفضلة</h2><div class="products-grid" id="wishlistGrid"></div></div>
+        <div id="userAddressesSection" class="hidden">
+            <h2 class="section-title">عناويني</h2>
+            <div style="background:var(--white); padding:20px; border-radius:15px; margin-bottom:15px;">
+                <form id="addAddressForm" onsubmit="submitNewAddress(event)">
+                    <input type="text" id="addrTitle" class="form-control" placeholder="اسم العنوان (البيت، العمل)" required>
+                    <input type="text" id="addrCity" class="form-control" placeholder="المدينة" required>
+                    <input type="text" id="addrDetails" class="form-control" placeholder="التفاصيل" required>
+                    <button type="submit" class="auth-btn" style="background:var(--purple-dark);">إضافة عنوان</button>
+                </form>
+            </div>
+            <div id="addressesList"></div>
+        </div>
         <div id="userSecuritySection" class="hidden">
-            <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
-                <div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="newPassword" class="form-control" required></div>
-                <div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="confirmPassword" class="form-control" required></div>
-                <button type="submit" class="btn-submit" id="btnChangePassword">تحديث كلمة المرور</button>
-            </form>
-        </div>
-        <button onclick="handleLogout()" class="btn-delete" style="margin-top: 20px;">تسجيل الخروج</button>
-    </div>
-
-    <!-- لوحة تحكم المدير -->
-    <div id="page-admin" class="container hidden">
-        <h2>لوحة التحكم الرئيسية ⚙️</h2>
-        <div class="admin-stats" style="margin-top: 15px;">
-            <div class="stat-card">إجمالي الطلبات<h3 id="statOrders">0</h3></div>
-            <div class="stat-card">المبيعات<h3 id="statSales">0</h3></div>
-            <div class="stat-card">المنتجات<h3 id="statProductsCount">0</h3></div>
-            <div class="stat-card">المخزون<h3 id="statTotalStock">0</h3></div>
-        </div>
-
-        <div class="admin-tabs">
-            <button id="tabAdminProducts" class="admin-tab-btn active" onclick="switchAdminTab('products')">المنتجات</button>
-            <button id="tabAdminCategories" class="admin-tab-btn" onclick="switchAdminTab('categories')">الأقسام</button>
-            <button id="tabAdminCoupons" class="admin-tab-btn" onclick="switchAdminTab('coupons')">أكواد الخصم</button>
-            <button id="tabAdminAnnouncements" class="admin-tab-btn" onclick="switchAdminTab('announcements')">شريط الإعلانات</button>
-            <button id="tabAdminOrders" class="admin-tab-btn" onclick="switchAdminTab('orders')">الطلبات</button>
-            <button id="tabAdminLottery" class="admin-tab-btn" onclick="switchAdminTab('lottery')">القرعة</button>
-            <button id="tabAdminSettings" class="admin-tab-btn" onclick="switchAdminTab('settings')">الإعدادات</button>
-            <button id="tabAdminReports" class="admin-tab-btn" onclick="switchAdminTab('reports')">التقارير</button>
-        </div>
-
-        <!-- قسم المنتجات -->
-        <div id="adminProductsSection">
-            <input type="text" id="adminProductSearch" class="form-control" placeholder="بحث في المنتجات..." oninput="renderAdminProducts()" style="margin-bottom: 15px;">
-            <form id="addProductForm" onsubmit="submitNewProduct(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3>إضافة منتج جديد</h3>
-                <div class="form-group"><label>اسم المنتج</label><input type="text" id="pName" class="form-control" required></div>
-                <div class="form-group"><label>السعر</label><input type="number" id="pPrice" class="form-control" required></div>
-                <div class="form-group"><label>الخصم %</label><input type="number" id="pDiscount" class="form-control" value="0"></div>
-                <div class="form-group"><label>المخزون</label><input type="number" id="pStock" class="form-control" value="10" required></div>
-                <div class="form-group"><label>صورة المنتج</label><input type="file" id="pImageFile" class="form-control" accept="image/*"></div>
-                <button type="submit" class="btn-submit" id="btnAddProduct">إضافة المنتج</button>
-            </form>
-            <div id="adminProductsList" style="background:white; padding:15px; border-radius:8px;"></div>
-        </div>
-
-        <!-- قسم الأقسام -->
-        <div id="adminCategoriesSection" class="hidden">
-            <form id="addCategoryForm" onsubmit="addNewCategory(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3>إضافة قسم جديد</h3>
-                <div class="form-group"><label>اسم القسم</label><input type="text" id="newCategoryName" class="form-control" required></div>
-                <button type="submit" class="btn-submit">إضافة القسم</button>
-            </form>
-            <div id="adminCategoriesList" style="background:white; padding:15px; border-radius:8px;"></div>
-        </div>
-
-        <!-- قسم أكواد الخصم -->
-        <div id="adminCouponsSection" class="hidden">
-            <form id="addCouponForm" onsubmit="addNewCoupon(event)" style="background:white; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3>إنشاء كود خصم جديد</h3>
-                <div class="form-group"><label>رمز الكود</label><input type="text" id="newCouponCode" class="form-control" required></div>
-                <div class="form-group"><label>قيمة الخصم</label><input type="number" step="any" id="newCouponDiscount" class="form-control" required></div>
-                <button type="submit" class="btn-submit">حفظ الكود</button>
-            </form>
-            <div id="adminCouponsList" style="background:white; padding:15px; border-radius:8px;"></div>
-        </div>
-
-        <!-- قسم شريط الإعلانات -->
-        <div id="adminAnnouncementsSection" class="hidden">
-            <form onsubmit="saveAnnouncement(event)" style="background:white; padding:15px; border-radius:8px;">
-                <h3>إدارة شريط الإعلانات المتحرك</h3>
-                <div class="form-group"><label>نص الإعلان</label><input type="text" id="announcementTextInput" class="form-control" required></div>
-                <button type="submit" class="btn-submit">تحديث الشريط</button>
-            </form>
-        </div>
-
-        <!-- قسم الطلبات -->
-        <div id="adminOrdersSection" class="hidden">
-            <input type="text" id="adminOrderSearch" class="form-control" placeholder="بحث بالاسم أو الهاتف..." oninput="renderAdminOrders()" style="margin-bottom: 15px;">
-            <div id="adminOrdersList"></div>
-        </div>
-
-        <!-- قسم القرعة -->
-        <div id="adminLotterySection" class="hidden">
-            <div style="background:white; padding:20px; border-radius:8px;">
-                <h3>سحب قرعة عشوائية للطلبات</h3>
-                <div class="form-group"><label>من الساعة:</label><input type="time" id="lotteryStartTime" class="form-control"></div>
-                <div class="form-group"><label>إلى الساعة:</label><input type="time" id="lotteryEndTime" class="form-control"></div>
-                <button onclick="runLotteryDraw()" class="btn-submit">بدء السحب العشوائي 🎁</button>
-                <div id="lotteryResultContainer" class="hidden" style="margin-top:15px; padding:15px; background:var(--gray-light); border-radius:8px;">
-                    <h4>الفائز بالقرعة:</h4>
-                    <p id="lotteryWinnerDetails" style="margin-top:5px; font-weight:bold;"></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- قسم الإعدادات -->
-        <div id="adminSettingsSection" class="hidden">
-            <div style="background:white; padding:20px; border-radius:8px; margin-bottom:15px;">
-                <h3>تنبيهات المخزون المنخفض</h3>
-                <div id="lowStockList" style="margin-top:10px;"></div>
-            </div>
-            <form id="adminEmailForm" onsubmit="handleAdminUpdateEmail(event)" style="background:white; padding:20px; border-radius:8px; margin-bottom:15px;">
-                <h3>تغيير بريد المدير</h3>
-                <div class="form-group"><label>البريد الجديد</label><input type="email" id="adminNewEmail" class="form-control" required></div>
-                <button type="submit" class="btn-submit" id="btnAdminEmail">حفظ البريد الجديد</button>
-            </form>
-            <form id="adminPassForm" onsubmit="handleAdminUpdatePassword(event)" style="background:white; padding:20px; border-radius:8px;">
-                <h3>تغيير كلمة مرور المدير</h3>
-                <div class="form-group"><label>كلمة المرور الجديدة</label><input type="password" id="adminNewPass" class="form-control" required></div>
-                <div class="form-group"><label>تأكيد كلمة المرور</label><input type="password" id="adminConfirmPass" class="form-control" required></div>
-                <button type="submit" class="btn-submit" id="btnAdminPass">تحديث كلمة المرور</button>
-            </form>
-        </div>
-
-        <!-- قسم التقارير -->
-        <div id="adminReportsSection" class="hidden">
-            <div style="background:white; padding:20px; border-radius:8px; text-align:center;">
-                <h3>تصدير تقارير الطلبات</h3>
-                <button onclick="exportOrdersCSV()" class="btn-submit" style="max-width:200px; margin:0 auto;">تصدير الطلبات (CSV)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة تفاصيل المنتج -->
-    <div class="modal" id="productModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('productModal')">&times;</button>
-            <div id="modalIcon" style="height: 180px; background-size: cover; background-position: center; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 4rem; background-color: var(--gray-light); margin-bottom: 15px;"></div>
-            <h2 id="modalTitle" style="margin-bottom: 10px;"></h2>
-            <div id="modalPrice" style="font-size: 1.2rem; font-weight: bold; color: var(--primary-dark); margin-bottom: 15px;"></div>
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                <button onclick="changeModalQty(-1)" class="btn-edit">-</button>
-                <span id="modalQty" style="font-weight: bold; font-size: 1.1rem;">1</span>
-                <button onclick="changeModalQty(1)" class="btn-edit">+</button>
-            </div>
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <button onclick="addToCartFromModal()" class="btn-submit">أضف للسلة</button>
-                <button onclick="buyNowFromModal()" class="btn-submit" style="background: var(--dark); color: white;">شراء فوري</button>
-            </div>
-            <hr style="margin: 15px 0;">
-            <h4>التقييمات</h4>
-            <div id="reviewsList" style="margin: 10px 0; max-height: 150px; overflow-y: auto;"></div>
-            <form id="reviewForm" class="hidden" onsubmit="submitReview(event)" style="margin-top: 10px;">
-                <div class="form-group"><label>التقييم</label><select id="reviewRating" class="form-control"><option value="5">⭐⭐⭐⭐⭐</option><option value="4">⭐⭐⭐⭐</option><option value="3">⭐⭐⭐</option><option value="2">⭐⭐</option><option value="1">⭐</option></select></div>
-                <div class="form-group"><label>تعليقك</label><input type="text" id="reviewComment" class="form-control" required></div>
-                <button type="submit" class="btn-submit">إرسال التقييم</button>
-            </form>
-            <hr style="margin: 15px 0;">
-            <h4>منتجات مشابهة</h4>
-            <div id="similarProductsList" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;"></div>
-        </div>
-    </div>
-
-    <!-- نافذة إتمام الطلب -->
-    <div class="modal" id="checkoutModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('checkoutModal')">&times;</button>
-            <h2>إتمام الطلب</h2>
-            <form id="checkoutForm" onsubmit="submitOrder(event)" style="margin-top: 15px;">
-                <div class="form-group"><label>الاسم الكامل</label><input type="text" id="orderName" class="form-control" required></div>
-                <div class="form-group"><label>رقم الهاتف</label><input type="tel" id="orderPhone" class="form-control" required></div>
-                <div class="form-group"><label>عنوان التوصيل</label><textarea id="orderAddress" class="form-control" rows="3" required></textarea></div>
-                <div class="form-group">
-                    <label>كود الخصم</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="couponCode" class="form-control" placeholder="أدخل الكود">
-                        <button type="button" onclick="applyCoupon()" class="btn-edit">تطبيق</button>
+            <h2 class="section-title">تغيير كلمة المرور</h2>
+            <div style="background:var(--white); padding:20px; border-radius:15px; max-width:500px; margin:0 auto;">
+                <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                    <div class="input-group">
+                        <input type="password" id="newPassword" class="form-control" placeholder="كلمة المرور الجديدة (6 أحرف على الأقل)" required minlength="6">
+                        <i class="fas fa-eye eye-icon" onclick="togglePassword('newPassword', this)"></i>
                     </div>
-                </div>
-                <div style="background: var(--gray-light); padding: 10px; border-radius: 6px; margin-bottom: 15px;">
-                    <div>المجموع الفرعي: <span id="chkSubtotal">0 د.ع</span></div>
-                    <div>الخصم: <span id="chkDiscount">0 د.ع</span></div>
-                    <hr style="margin: 5px 0;">
-                    <div><b>الإجمالي النهائي: <span id="chkTotal">0 د.ع</span></b></div>
-                </div>
-                <button type="submit" class="btn-submit" id="btnSubmitOrder">تأكيد الطلب</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- نافذة الفاتورة والنجاح -->
-    <div class="modal" id="invoiceModal">
-        <div class="modal-content" style="text-align: center;">
-            <div style="font-size: 3rem; color: var(--green); margin-bottom: 10px;"><i class="fa-solid fa-circle-check"></i></div>
-            <h2>تم إرسال طلبك بنجاح!</h2>
-            <p style="margin: 10px 0; color: var(--gray);">رقم الفاتورة: <b id="invoiceId">#0</b></p>
-            <button onclick="closeModal('invoiceModal'); showPage('home');" class="btn-submit">العودة للرئيسية</button>
-        </div>
-    </div>
-
-    <!-- نافذة تفاصيل التوصيل للمدير -->
-    <div class="modal" id="deliveryDetailsModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('deliveryDetailsModal')">&times;</button>
-            <h3>تحديد وقت وتكلفة التوصيل</h3>
-            <form onsubmit="saveDeliveryDetails(event)" style="margin-top: 15px;">
-                <input type="hidden" id="deliveryOrderId">
-                <div class="form-group"><label>وقت التوصيل</label><input type="text" id="deliveryTimeInput" class="form-control" required></div>
-                <div class="form-group"><label>تكلفة التوصيل (د.ع)</label><input type="number" id="deliveryCostInput" class="form-control" required></div>
-                <button type="submit" class="btn-submit">حفظ وقبول الطلب</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- سلة المشتريات الجانبية -->
-    <div class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h3>سلة المشتريات</h3>
-            <button onclick="toggleCart()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items" id="cartItems"></div>
-        <div class="cart-footer" id="cartFooter" style="display:none;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:bold;">
-                <span>المجموع:</span>
-                <span id="cartTotal">0 د.ع</span>
+                    <div class="input-group">
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="تأكيد كلمة المرور الجديدة" required minlength="6">
+                        <i class="fas fa-eye eye-icon" onclick="togglePassword('confirmPassword', this)"></i>
+                    </div>
+                    <button type="submit" class="auth-btn" id="btnChangePassword" style="background:var(--purple-dark);">تحديث كلمة المرور</button>
+                </form>
             </div>
-            <button class="checkout-btn" onclick="openCheckout()">إتمام الشراء</button>
         </div>
     </div>
+</div>
 
-    <!-- عنصر الإشعارات العائمة -->
-    <div id="toast"></div>
+<div id="page-admin" class="hidden">
+    <div class="section" style="max-width:1100px;">
+        <h2 class="section-title">لوحة الإدارة الشاملة</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><h3 id="statOrders">0</h3><p>الطلبات الكلية</p></div>
+            <div class="stat-card"><h3 id="statSales">0</h3><p>المبيعات (د.ع)</p></div>
+            <div class="stat-card"><h3 id="statProductsCount">0</h3><p>المنتجات</p></div>
+            <div class="stat-card"><h3 id="statTotalStock">0</h3><p>قطع المخزون</p></div>
+        </div>
+        <div class="admin-tabs">
+            <button class="admin-tab active" id="tabAdminProducts" onclick="switchAdminTab('products')">المنتجات</button>
+            <button class="admin-tab" id="tabAdminOrders" onclick="switchAdminTab('orders')">الطلبات</button>
+            <button class="admin-tab" id="tabAdminCategories" onclick="switchAdminTab('categories')">الأقسام 📂</button>
+            <button class="admin-tab" id="tabAdminCoupons" onclick="switchAdminTab('coupons')">أكواد الخصم 🎟️</button>
+            <button class="admin-tab" id="tabAdminLottery" onclick="switchAdminTab('lottery')">سحب القرعة 🎁</button>
+            <button class="admin-tab" id="tabAdminSettings" onclick="switchAdminTab('settings')">إعدادات المدير ⚙️</button>
+            <button class="admin-tab" id="tabAdminReports" onclick="switchAdminTab('reports')">التقارير والمخزون 📊</button>
+        </div>
+        <div id="adminProductsSection">
+            <div style="background:var(--white); padding:20px; border-radius:15px; margin-bottom:20px;">
+                <h3>إضافة منتج جديد</h3>
+                <form id="addProductForm" onsubmit="submitNewProduct(event)" style="margin-top:15px;">
+                    <input type="text" id="pName" class="form-control" placeholder="الاسم" required>
+                    <input type="number" id="pPrice" class="form-control" placeholder="السعر" required>
+                    <input type="number" id="pDiscount" class="form-control" placeholder="الخصم %">
+                    <input type="number" id="pStock" class="form-control" placeholder="الكمية المتوفرة (المخزون)" value="10" required>
+                    <select id="pCategory" class="form-control" required><option value="">-- اختر القسم --</option></select>
+                    <input type="file" id="pImageFile" class="form-control" accept="image/*"><small style="display:block;color:var(--gray);margin:-8px 0 12px;">اختر صورة؛ سترفع إلى مخزن products (حد 5MB).</small>
+                    <button type="submit" class="auth-btn" id="btnAddProduct">إضافة</button>
+                </form>
+            </div>
+            <div style="background:var(--white); padding:20px; border-radius:15px;">
+                <h3>قائمة المنتجات (مع تعديل سريع للمخزون)</h3>
+                <input type="text" id="adminProductSearch" class="admin-search" placeholder="ابحث عن منتج..." onkeyup="renderAdminProducts()">
+                <div id="adminProductsList"></div>
+            </div>
+        </div>
+        <div id="adminOrdersSection" class="hidden">
+            <div style="background:var(--white); padding:20px; border-radius:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3>إدارة الطلبات</h3>
+                    <button onclick="exportOrdersCSV()" class="btn-edit" style="background:var(--purple-dark); padding:8px 15px;"><i class="fas fa-file-excel"></i> تصدير الطلبات CSV</button>
+                </div>
+                <input type="text" id="adminOrderSearch" class="admin-search" placeholder="ابحث باسم الزبون أو الهاتف..." onkeyup="renderAdminOrders()">
+                <div id="adminOrdersList"></div>
+            </div>
+        </div>
+        <div id="adminCategoriesSection" class="hidden">
+            <div style="background:var(--white); padding:20px; border-radius:15px; box-shadow:var(--shadow);">
+                <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-folder-plus"></i> إضافة قسم جديد</h3>
+                <form onsubmit="submitNewCategory(event)" style="display:flex; gap:10px; margin-bottom:20px;">
+                    <input type="text" id="newCategoryName" class="form-control" placeholder="اسم القسم الجديد (مثال: إلكترونيات)" required>
+                    <button type="submit" class="auth-btn" style="width:120px;">إضافة</button>
+                </form>
+                <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-list"></i> الأقسام الحالية</h3>
+                <div id="categoriesList"></div>
+            </div>
+        </div>
+        <div id="adminCouponsSection" class="hidden">
+            <div style="background:var(--white); padding:20px; border-radius:15px; box-shadow:var(--shadow);">
+                <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-ticket-alt"></i> إنشاء كود خصم جديد</h3>
+                <form onsubmit="submitNewCoupon(event)" style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:10px; margin-bottom:20px; align-items:end;">
+                    <div><label style="font-weight:bold; font-size:0.8rem;">الكود:</label><input type="text" id="couponCodeInput" class="form-control" placeholder="SALE20" required style="text-transform:uppercase;"></div>
+                    <div><label style="font-weight:bold; font-size:0.8rem;">نسبة الخصم (%):</label><input type="number" id="couponPercent" class="form-control" placeholder="20" min="1" max="100" required></div>
+                    <div><label style="font-weight:bold; font-size:0.8rem;">عدد الاستخدامات:</label><input type="number" id="couponMaxUses" class="form-control" placeholder="100" min="1" required></div>
+                    <button type="submit" class="auth-btn" style="width:100px; height:45px;">إنشاء</button>
+                </form>
+                <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-list"></i> الأكواد الحالية</h3>
+                <div id="couponsList"></div>
+            </div>
+        </div>
+        <div id="adminLotterySection" class="hidden">
+            <div style="background:var(--white); padding:25px; border-radius:15px; box-shadow:var(--shadow); text-align:center;">
+                <h3 style="color:var(--purple-dark); margin-bottom:15px;"><i class="fas fa-gift"></i> القرعة بين المستخدمين المسجلين</h3>
+                <p style="color:var(--gray); margin-bottom:20px;">سيتم اختيار فائز عشوائي من بين جميع المستخدمين الذين سجلوا في المتجر.</p>
+                <button onclick="runLotteryDraw()" class="auth-btn" style="background:var(--orange); max-width:250px; margin:0 auto; font-size:1.1rem;"><i class="fas fa-dice"></i> سحب القرعة الآن</button>
+                <div id="lotteryResultContainer" style="margin-top:25px; padding:15px; border-radius:10px; background:var(--gray-light); display:none;">
+                    <h4 style="color:var(--green); margin-bottom:10px;">🎉 الفائز بالقرعة هو:</h4>
+                    <p id="lotteryWinnerDetails" style="font-size:1.1rem; font-weight:bold;"></p>
+                </div>
+            </div>
+        </div>
+        <div id="adminSettingsSection" class="hidden">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                <div style="background:var(--white); padding:20px; border-radius:15px; box-shadow:var(--shadow);">
+                    <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-scroll"></i> نص الشريط المتحرك</h3>
+                    <form onsubmit="handleUpdateMarquee(event)">
+                        <textarea id="marqueeTextInput" class="form-control" placeholder="اكتب هنا النص الذي سيظهر متحركاً" rows="3" required></textarea>
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <button type="button" class="auth-btn" style="background:var(--green);" onclick="toggleMarquee(true)">▶️ تشغيل الشريط</button>
+                            <button type="button" class="auth-btn" style="background:var(--red);" onclick="toggleMarquee(false)">⏹️ إيقاف الشريط</button>
+                        </div>
+                        <button type="submit" class="auth-btn" id="btnMarquee" style="background:var(--orange);">حفظ النص</button>
+                    </form>
+                </div>
+                <div style="background:var(--white); padding:20px; border-radius:15px; box-shadow:var(--shadow);">
+                    <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-envelope"></i> تغيير بريد المدير</h3>
+                    <form onsubmit="handleAdminUpdateEmail(event)">
+                        <input type="email" id="adminNewEmail" class="form-control" placeholder="البريد الإلكتروني الجديد" required>
+                        <button type="submit" class="auth-btn" id="btnAdminEmail" style="background:var(--orange);">حفظ البريد الجديد</button>
+                    </form>
+                </div>
+                <div style="background:var(--white); padding:20px; border-radius:15px; box-shadow:var(--shadow);">
+                    <h3 style="margin-bottom:15px; color:var(--purple-dark);"><i class="fas fa-key"></i> تغيير كلمة مرور المدير</h3>
+                    <form onsubmit="handleAdminUpdatePassword(event)">
+                        <div class="input-group"><input type="password" id="adminNewPass" class="form-control" placeholder="كلمة المرور الجديدة (6 أحرف فأكثر)" required minlength="6"><i class="fas fa-eye eye-icon" onclick="togglePassword('adminNewPass', this)"></i></div>
+                        <div class="input-group"><input type="password" id="adminConfirmPass" class="form-control" placeholder="تأكيد كلمة المرور الجديدة" required minlength="6"><i class="fas fa-eye eye-icon" onclick="togglePassword('adminConfirmPass', this)"></i></div>
+                        <button type="submit" class="auth-btn" id="btnAdminPass" style="background:var(--purple-dark);">تحديث كلمة المرور</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div id="adminReportsSection" class="hidden">
+            <div style="background:var(--white); padding:20px; border-radius:15px; margin-bottom:20px;">
+                <h3 style="color:var(--purple-dark); margin-bottom:15px;"><i class="fas fa-chart-line"></i> رسم بياني للمبيعات</h3>
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
+            <div style="background:var(--white); padding:20px; border-radius:15px; margin-bottom:20px;">
+                <h3 style="color:var(--red); margin-bottom:15px;"><i class="fas fa-exclamation-triangle"></i> تنبيهات المخزون المنخفض (أقل من 5 قطع)</h3>
+                <div id="lowStockList"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <!-- ربط ملف الـ JavaScript -->
-    <script src="script.js"></script>
+<div class="modal-overlay" id="deliveryDetailsModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('deliveryDetailsModal')"><i class="fas fa-times"></i></button>
+        <h2 style="text-align:center; margin-bottom:15px;">تحديد تكلفة ووقت التوصيل</h2>
+        <form onsubmit="saveDeliveryDetails(event)">
+            <input type="hidden" id="deliveryOrderId">
+            <div style="margin-bottom:15px;">
+                <label style="display:block; font-weight:bold; margin-bottom:5px;">مدة التوصيل:</label>
+                <input type="text" id="deliveryTimeInput" class="form-control" placeholder="مثلاً: يومين" required>
+            </div>
+            <div style="margin-bottom:15px;">
+                <label style="display:block; font-weight:bold; margin-bottom:5px;">تكلفة التوصيل (د.ع):</label>
+                <input type="number" id="deliveryCostInput" class="form-control" placeholder="2000" required>
+            </div>
+            <button type="submit" class="auth-btn" style="background:var(--green);">حفظ وقبول الطلب</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="editProductModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('editProductModal')"><i class="fas fa-times"></i></button>
+        <h2 style="text-align:center;">تعديل المنتج</h2>
+        <form id="editProductForm" onsubmit="submitEditProduct(event)">
+            <input type="hidden" id="editPId">
+            <input type="text" id="editPName" class="form-control" placeholder="الاسم" required>
+            <input type="number" id="editPPrice" class="form-control" placeholder="السعر" required>
+            <input type="number" id="editPDiscount" class="form-control" placeholder="الخصم %">
+            <input type="number" id="editPStock" class="form-control" placeholder="المخزون" required>
+            <input type="file" id="editPImageFile" class="form-control" accept="image/*">
+            <button type="submit" class="auth-btn" id="btnEditProduct">حفظ التغييرات</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="productModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button>
+        <div class="product-image" id="modalIcon" style="height:200px; font-size:6rem;">📦</div>
+        <h2 id="modalTitle" style="text-align:center; margin-top:15px;"></h2>
+        <h3 id="modalPrice" style="text-align:center; color:var(--orange);"></h3>
+        <div id="modalCountdownContainer" style="text-align:center; margin-bottom:10px;"></div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:15px; margin-bottom:15px;">
+            <button onclick="changeModalQty(-1)" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--border); background:white; cursor:pointer; font-weight:bold;">-</button>
+            <span id="modalQty" style="font-weight:bold;">1</span>
+            <button onclick="changeModalQty(1)" style="width:35px; height:35px; border-radius:50%; border:1px solid var(--border); background:white; cursor:pointer; font-weight:bold;">+</button>
+        </div>
+        <button class="buy-now-btn" onclick="buyNowFromModal()"><i class="fas fa-bolt"></i> اشترِ الآن</button>
+        <button class="add-to-cart" style="width:100%; margin-bottom:20px;" onclick="addToCartFromModal()">أضف للسلة</button>
+        <button onclick="shareProduct()" style="width:100%; background:#007bff; color:white; border:none; padding:10px; border-radius:10px; cursor:pointer; font-weight:bold; margin-bottom:20px;"><i class="fas fa-share-alt"></i> مشاركة المنتج</button>
+        <h4>التقييمات:</h4>
+        <div id="reviewsList" style="margin-top:10px; margin-bottom:15px;"></div>
+        <form id="reviewForm" class="hidden" onsubmit="submitReview(event)">
+            <select id="reviewRating" class="form-control">
+                <option value="5">⭐⭐⭐⭐⭐ ممتاز</option>
+                <option value="4">⭐⭐⭐⭐ جيد جداً</option>
+                <option value="3">⭐⭐⭐ جيد</option>
+                <option value="2">⭐⭐ مقبول</option>
+                <option value="1">⭐ سيء</option>
+            </select>
+            <input type="text" id="reviewComment" class="form-control" placeholder="تعليقك..." required>
+            <button type="submit" class="auth-btn" style="background:var(--purple-dark);">إرسال</button>
+        </form>
+        <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
+            <h4>منتجات مشابهة:</h4>
+            <div id="similarProductsList" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header"><h3>السلة</h3><button onclick="toggleCart()" style="background:none;border:none;color:white;cursor:pointer;"><i class="fas fa-times"></i></button></div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+        <div style="display:flex;justify-content:space-between;font-weight:bold;margin-bottom:10px;"><span>المجموع:</span><span id="cartTotal"></span></div>
+        <button class="checkout-btn" onclick="openCheckout()">إتمام الطلب</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('checkoutModal')"><i class="fas fa-times"></i></button>
+        <h2 style="text-align:center;">إتمام الطلب</h2>
+        <form id="checkoutForm" onsubmit="submitOrder(event)">
+            <input type="text" id="orderName" class="form-control" placeholder="الاسم الكامل" required>
+            <input type="tel" id="orderPhone" class="form-control" placeholder="رقم الهاتف" required>
+            <input type="text" id="orderAddress" class="form-control" placeholder="العنوان بالتفصيل" required>
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <input type="text" id="couponCode" class="form-control" placeholder="كود الخصم" style="margin-bottom:0; flex:1;">
+                <button type="button" onclick="applyCoupon()" style="background:var(--purple-dark); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer; font-family:inherit;">تطبيق</button>
+            </div>
+            <div style="background:var(--gray-light); padding:15px; border-radius:10px; margin-bottom:15px;">
+                <div style="display:flex;justify-content:space-between;"><span>المنتجات:</span><span id="chkSubtotal"></span></div>
+                <div style="display:flex;justify-content:space-between; color:var(--gray);"><small>تكلفة التوصيل يحددها المدير لاحقاً</small></div>
+                <div style="display:flex;justify-content:space-between; color:var(--red);"><span>الخصم:</span><span id="chkDiscount">0 د.ع</span></div>
+                <div style="display:flex;justify-content:space-between;font-weight:bold;color:var(--orange);margin-top:10px;"><span>المجموع الكلي:</span><span id="chkTotal"></span></div>
+            </div>
+            <button type="submit" class="auth-btn" id="btnSubmitOrder">تأكيد الطلب</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="invoiceModal">
+    <div class="modal" style="text-align:center;">
+        <i class="fas fa-check-circle" style="font-size:4rem;color:var(--green);margin-bottom:15px;"></i>
+        <h2>تم الطلب بنجاح!</h2>
+        <p style="color:var(--gray);margin-bottom:15px;">رقم الطلب: <strong id="invoiceId"></strong></p>
+        <button onclick="window.print()" class="auth-btn" style="background:var(--purple-dark);margin-bottom:10px;"><i class="fas fa-print"></i> طباعة</button>
+        <button onclick="closeModal('invoiceModal')" class="auth-btn">إغلاق</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="quickOrderModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal('quickOrderModal')"><i class="fas fa-times"></i></button>
+        <h2 style="text-align:center; margin-bottom:15px;">⚡ طلب سريع</h2>
+        <p style="text-align:center; color:var(--gray); margin-bottom:15px;" id="quickOrderProductName"></p>
+        <form onsubmit="submitQuickOrder(event)">
+            <input type="hidden" id="quickOrderProductId">
+            <input type="text" id="quickName" class="form-control" placeholder="الاسم الكامل" required>
+            <input type="tel" id="quickPhone" class="form-control" placeholder="رقم الهاتف" required>
+            <input type="text" id="quickAddress" class="form-control" placeholder="العنوان بالتفصيل" required>
+            <div style="background:var(--gray-light); padding:10px; border-radius:10px; margin-bottom:15px; text-align:center;">
+                <strong>السعر: <span id="quickPrice" style="color:var(--orange);"></span></strong>
+            </div>
+            <button type="submit" class="auth-btn" id="btnQuickOrder" style="background:var(--green);"><i class="fas fa-bolt"></i> تأكيد الطلب السريع</button>
+        </form>
+    </div>
+</div>
+
+<div id="printSection" style="display:none; padding:20px; font-family:'Cairo', sans-serif;"></div>
+
+<div class="toast" id="toast"></div>
+<a href="https://wa.me/9647725372995" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+
+<footer style="text-align:center; padding:30px; background:var(--purple-dark); color:white;">
+    <strong>يساعدكم</strong> © 2026
+    <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px; font-size: 0.9rem;">
+        <a href="#" onclick="showPage('about'); return false;" style="color: var(--orange); text-decoration: none;">من نحن وسياسة الاستبدال</a>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+  });
+}
+</script>
 </body>
-</html>
+            </html>
