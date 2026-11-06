@@ -306,7 +306,8 @@ async function openProduct(id) {
     const p = allProducts.find(x => x.id === id); if (!p) return;
     activeProductId = id; modalQty = 1; document.getElementById('modalQty').textContent = modalQty;
     const iconDiv = document.getElementById('modalIcon');
-    if (p.image_url) { iconDiv.innerHTML = `<img src="${p.image_url}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;">`; }
+    // 👇 هنا التعديل اللي طلبته (تغيير cover إلى contain وإضافة خلفية بيضاء) 👇
+    if (p.image_url) { iconDiv.innerHTML = `<img src="${p.image_url}" style="width:100%; height:100%; object-fit:contain; background:#fff; border-radius:10px;">`; }
     else { iconDiv.innerHTML = `<span style="font-size:6rem;">${p.icon || '📦'}</span>`; }
     document.getElementById('modalTitle').textContent = p.name;
     let priceText = `${Number(p.price).toLocaleString('ar-IQ')} د.ع`;
