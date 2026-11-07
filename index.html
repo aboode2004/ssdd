@@ -11,6 +11,7 @@
 <meta property="og:type" content="website">
 <link rel="manifest" href="manifest.json">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -37,7 +38,7 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
 .product-card{background:var(--white);border-radius:15px;padding:18px;display:flex;flex-direction:column;box-shadow:var(--shadow);cursor:pointer;transition:transform 0.2s;position:relative}
 .product-card:hover{transform:translateY(-5px)}
-.product-image{height:150px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--gray-light);border-radius:10px;margin-bottom:15px;background-size:cover;background-position:center}
+.product-image{height:150px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--gray-light);border-radius:10px;margin-bottom:15px;background-size:cover;background-position:center;position:relative;overflow:hidden;}
 .product-title{font-size:1.1rem;font-weight:700}
 .product-price{font-size:1.3rem;font-weight:900;color:var(--orange);margin:5px 0}
 .old-price{font-size:0.9rem;color:var(--gray);text-decoration:line-through;margin-left:5px}
@@ -102,6 +103,12 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
 .social-proof-toast { background: var(--white); border-right: 4px solid var(--green); padding: 10px 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; transform: translateX(120%); transition: 0.5s; max-width: 300px; font-size: 0.85rem; }
 .social-proof-toast.show { transform: translateX(0); }
 .social-proof-toast img { width: 40px; height: 40px; border-radius: 5px; object-fit: cover; }
+
+/* السلايدر الجديد للصور */
+.slider-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; z-index:5; display:flex; align-items:center; justify-content:center; }
+.slider-btn.prev { left:10px; }
+.slider-btn.next { right:10px; }
+
 @media print { body * { visibility: hidden; } #printSection, #printSection * { visibility: visible; } #printSection { position: absolute; left: 0; top: 0; width: 100%; } }
 [data-theme="dark"] { --white: #18181b; --black: #f4f4f5; --gray-light: #09090b; --border: #27272a; --gray: #a1a1aa; --purple-dark: #000000; }
 [data-theme="dark"] .modal-close { color: var(--black); }
@@ -166,7 +173,6 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
                 <li>يحق للزبون استبدال المنتج أو استرجاعه خلال 3 أيام من تاريخ الاستلام.</li>
                 <li>يجب أن يكون المنتج بحالته الأصلية وبدون أي تلف أو استخدام.</li>
                 <li>في حال كان المنتج تالفاً عند الاستلام، يتحمل المتجر تكلفة الاسترجاع والتبديل.</li>
-                <li>لا يمكن استرجاع المنتجات التي تم كسرها بسبب سوء الاستخدام من قبل الزبون.</li>
             </ul>
             <button onclick="showPage('home')" class="auth-btn" style="margin-top:30px;">العودة للرئيسية</button>
         </div>
@@ -279,7 +285,8 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
                     <input type="number" id="pDiscount" class="form-control" placeholder="الخصم %">
                     <input type="number" id="pStock" class="form-control" placeholder="الكمية المتوفرة (المخزون)" value="10" required>
                     <select id="pCategory" class="form-control" required><option value="">-- اختر القسم --</option></select>
-                    <input type="file" id="pImageFile" class="form-control" accept="image/*"><small style="display:block;color:var(--gray);margin:-8px 0 12px;">اختر صورة؛ سترفع إلى مخزن products (حد 5MB).</small>
+                    <!-- تم التعديل هنا لدعم رفع أكثر من صورة -->
+                    <input type="file" id="pImageFile" class="form-control" accept="image/*" multiple><small style="display:block;color:var(--gray);margin:-8px 0 12px;">يمكنك اختيار أكثر من صورة للمنتج.</small>
                     <button type="submit" class="auth-btn" id="btnAddProduct">إضافة</button>
                 </form>
             </div>
@@ -415,7 +422,15 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
 <div class="modal-overlay" id="productModal">
     <div class="modal">
         <button class="modal-close" onclick="closeModal('productModal')"><i class="fas fa-times"></i></button>
-        <div class="product-image" id="modalIcon" style="height:200px; font-size:6rem;">📦</div>
+        
+        <!-- السلايدر الجديد -->
+        <div class="product-image" id="modalIcon" style="height:200px; font-size:6rem; position:relative;">
+            <button class="slider-btn prev" onclick="changeSlide(-1)" id="prevBtn" style="display:none;"><i class="fas fa-chevron-right"></i></button>
+            <img id="modalImg" src="" style="display:none; width:100%; height:100%; object-fit:contain; background:#fff; border-radius:10px;">
+            <span id="modalEmoji" style="font-size:6rem;">📦</span>
+            <button class="slider-btn next" onclick="changeSlide(1)" id="nextBtn" style="display:none;"><i class="fas fa-chevron-left"></i></button>
+        </div>
+
         <h2 id="modalTitle" style="text-align:center; margin-top:15px;"></h2>
         <h3 id="modalPrice" style="text-align:center; color:var(--orange);"></h3>
         <div id="modalCountdownContainer" style="text-align:center; margin-bottom:10px;"></div>
@@ -464,6 +479,14 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
             <input type="text" id="orderName" class="form-control" placeholder="الاسم الكامل" required>
             <input type="tel" id="orderPhone" class="form-control" placeholder="رقم الهاتف" required>
             <input type="text" id="orderAddress" class="form-control" placeholder="العنوان بالتفصيل" required>
+            
+            <!-- خيارات الدفع الجديدة -->
+            <label style="font-weight:bold; margin-bottom:5px; display:block;">طريقة الدفع:</label>
+            <select id="paymentMethod" class="form-control" style="margin-bottom:15px;">
+                <option value="cod">الدفع عند الاستلام</option>
+                <option value="card">بطاقة ماستركارد (قريباً)</option>
+            </select>
+
             <div style="display:flex; gap:10px; margin-bottom:15px;">
                 <input type="text" id="couponCode" class="form-control" placeholder="كود الخصم" style="margin-bottom:0; flex:1;">
                 <button type="button" onclick="applyCoupon()" style="background:var(--purple-dark); color:white; border:none; border-radius:10px; padding:0 15px; cursor:pointer; font-family:inherit;">تطبيق</button>
@@ -480,11 +503,11 @@ body{font-family:'Cairo',sans-serif;background:var(--gray-light);color:var(--bla
 </div>
 
 <div class="modal-overlay" id="invoiceModal">
-    <div class="modal" style="text-align:center;">
+    <div class="modal" style="text-align:center;" id="printableInvoice">
         <i class="fas fa-check-circle" style="font-size:4rem;color:var(--green);margin-bottom:15px;"></i>
         <h2>تم الطلب بنجاح!</h2>
         <p style="color:var(--gray);margin-bottom:15px;">رقم الطلب: <strong id="invoiceId"></strong></p>
-        <button onclick="window.print()" class="auth-btn" style="background:var(--purple-dark);margin-bottom:10px;"><i class="fas fa-print"></i> طباعة</button>
+        <button onclick="downloadPDF()" class="auth-btn" style="background:var(--purple-dark);margin-bottom:10px;"><i class="fas fa-file-pdf"></i> تحميل الفاتورة (PDF)</button>
         <button onclick="closeModal('invoiceModal')" class="auth-btn">إغلاق</button>
     </div>
 </div>
@@ -529,4 +552,4 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body>
-            </html>
+</html>
