@@ -1,4 +1,4 @@
-const SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
+hereconst SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-y-8QOaGJ6RzC4UxeG5ATw_LxVZByAo';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -134,6 +134,9 @@ function generateUsername(name) {
     return cleanName ? `${cleanName}_${randomNum}` : `user_${randomNum}`;
 }
 
+// ==========================================
+// دالة التسجيل المحدثة (ترسل رابط مباشر للتأكيد عبر البريد)
+// ==========================================
 async function handleSignup(e) {
     e.preventDefault(); 
     const btn = document.getElementById('btnSignup'); 
@@ -159,34 +162,10 @@ async function handleSignup(e) {
         btn.textContent = 'إنشاء حساب'; 
     } 
     else { 
-        showToast('تم إرسال كود التحقق إلى بريدك الإلكتروني!'); 
+        showToast('تم إرسال رابط التأكيد إلى بريدك الإلكتروني! 📧'); 
         btn.disabled = false;
         btn.textContent = 'إنشاء حساب';
-        
-        let verifyInputArea = document.getElementById('verifyOtpContainer');
-        if(verifyInputArea) {
-            verifyInputArea.classList.remove('hidden');
-        } else {
-            let code = prompt("الرجاء إدخال كود التحقق (OTP) المرسل إلى بريدك الإلكتروني:");
-            if(code) {
-                handleVerifyOtpCode(email, code);
-            }
-        }
-    }
-}
-
-async function handleVerifyOtpCode(email, token) {
-    const { data, error } = await db.auth.verifyOtp({
-        email: email,
-        token: token,
-        type: 'signup'
-    });
-
-    if (error) {
-        showToast('كود التحقق غير صحيح أو انتهت صلاحيته: ' + error.message, 'error');
-    } else {
-        showToast('تم تأكيد البريد الإلكتروني وتسجيل الدخول بنجاح! 🎉');
-        showPage('home');
+        alert("يرجى التحقق من بريدك الإلكتروني والضغط على الرابط المرسل لتفعيل حسابك.");
     }
 }
 
@@ -535,7 +514,7 @@ async function loadAdminData() {
     document.getElementById('statProductsCount').textContent = allProducts.length;
     document.getElementById('statTotalStock').textContent = totalStockCount;
     renderAdminProducts(); renderAdminOrders(allOrderItems); renderLowStock(); loadCoupons();
-    if(document.getElementById('adminReportsSection') && !document.getElementById('adminReportsSection').classList.contains('hidden')) { renderSalesChart(); }
+    if(document.getElementById('adminReportsSection') && !document.getElementById('adminReportsSection'].classList.contains('hidden')) { renderSalesChart(); }
 }
 
 function renderSalesChart() {
