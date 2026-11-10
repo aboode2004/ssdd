@@ -22,29 +22,6 @@ function toggleTheme() {
     if(icon) icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
 }
 
-const fakeNames = ["أحمد من بغداد", "علي من الموصل", "سارة من أربيل", "حسين من البصرة", "مريم من النجف", "مصطفى من كركوك"];
-function startSocialProof() {
-    setInterval(() => {
-        if(!allProducts || allProducts.length === 0) return;
-        const randomProduct = allProducts[Math.floor(Math.random() * allProducts.length)];
-        const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-        const container = document.getElementById('social-proof-container');
-        const toast = document.createElement('div');
-        toast.className = 'social-proof-toast';
-        toast.innerHTML = `
-            ${randomProduct.image_url ? `<img src="${randomProduct.image_url}">` : '<div style="font-size:24px;">📦</div>'}
-            <div>
-                <div style="font-weight:bold; margin-bottom:3px;">${randomName}</div>
-                <div>اشترى <span style="color:var(--orange); font-weight:bold;">${randomProduct.name}</span></div>
-                <div style="font-size:0.7rem; color:var(--gray); margin-top:2px;">قبل ${Math.floor(Math.random() * 10) + 1} دقائق</div>
-            </div>
-        `;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 100);
-        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 500); }, 6000);
-    }, 15000);
-}
-
 function startCountdowns() {
     const countdowns = document.querySelectorAll('.countdown-timer');
     if(countdowns.length === 0) return;
@@ -158,12 +135,59 @@ function generateUsername(name) {
 }
 
 async function handleSignup(e) {
-    e.preventDefault(); const btn = document.getElementById('btnSignup'); btn.disabled = true; btn.textContent = 'جاري...';
+    e.preventDefault(); 
+    const btn = document.getElementById('btnSignup'); 
+    btn.disabled = true; 
+    btn.textContent = 'جاري...';
+    
     const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
     const username = generateUsername(name);
-    const { error } = await db.auth.signUp({ email: document.getElementById('signupEmail').value, password: document.getElementById('signupPassword').value, options: { data: { full_name: name, username: username } } });
-    if (error) { showToast('خطأ: ' + error.message, 'error'); btn.disabled = false; btn.textContent = 'إنشاء حساب'; } 
-    else { showToast('تم إنشاء الحساب! اسمك: ' + username); showPage('home'); }
+
+    const { error } = await db.auth.signUp({ 
+        email: email, 
+        password: password, 
+        options: { 
+            data: { full_name: name, username: username } 
+        } 
+    });
+
+    if (error) { 
+        showToast('خطأ: ' + error.message, 'error'); 
+        btn.disabled = false; 
+        btn.textContent = 'إنشاء حساب'; 
+    } 
+    else { 
+        showToast('تم إرسال كود التحقق إلى بريدك الإلكتروني!'); 
+        btn.disabled = false;
+        btn.textContent = 'إنشاء حساب';
+        
+        let verifyInputArea = document.getElementById('verifyOtpContainer');
+        if(verifyInputArea) {
+            verifyInputArea.classList.remove('hidden');
+        } else {
+            let code = prompt("الرجاء إدخال كود التحقق (OTP) المرسل إلى بريدك الإلكتروني:");
+            if(code) {
+                handleVerifyOtpCode(email, code);
+            }
+        }
+    }
+}
+
+async function handleVerifyOtpCode(email, token) {
+    const { data, error } = await db.auth.verifyOtp({
+        email: email,
+        token: token,
+        type: 'signup'
+    });
+
+    if (error) {
+        showToast('كود التحقق غير صحيح أو انتهت صلاحيته: ' + error.message, 'error');
+    } else {
+        showToast('تم تأكيد البريد الإلكتروني وتسجيل الدخول بنجاح! 🎉');
+        showPage('home');
+    }
 }
 
 async function handleLogout() { await db.auth.signOut(); showPage('home'); showToast('تم الخروج'); }
@@ -306,7 +330,6 @@ async function openProduct(id) {
     const p = allProducts.find(x => x.id === id); if (!p) return;
     activeProductId = id; modalQty = 1; document.getElementById('modalQty').textContent = modalQty;
     const iconDiv = document.getElementById('modalIcon');
-    // 👇 هنا التعديل اللي طلبته (تغيير cover إلى contain وإضافة خلفية بيضاء) 👇
     if (p.image_url) { iconDiv.innerHTML = `<img src="${p.image_url}" style="width:100%; height:100%; object-fit:contain; background:#fff; border-radius:10px;">`; }
     else { iconDiv.innerHTML = `<span style="font-size:6rem;">${p.icon || '📦'}</span>`; }
     document.getElementById('modalTitle').textContent = p.name;
@@ -761,6 +784,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.setAttribute('data-theme', savedTheme);
     const icon = document.getElementById('themeIcon'); if(icon) icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
     initAuth(); loadProducts(); loadMarquee(); loadCategories();
-    startSocialProof();
     setInterval(() => { if (currentUser && currentUser.id === '04a16772-0bf9-4acd-8007-ab7f1e085751') { loadAdminData(); } }, 30000);
 });
