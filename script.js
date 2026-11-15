@@ -1,4 +1,4 @@
-hereconst SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
+herehereconst SUPABASE_URL = 'https://mixtajmjaitfcqsvflgl.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_-y-8QOaGJ6RzC4UxeG5ATw_LxVZByAo';
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -62,12 +62,8 @@ function playOrderSound() {
 }
 
 function showPage(pageName) {
-    ['home', 'auth', 'profile', 'admin', 'about'].forEach(p => {
-        const el = document.getElementById('page-' + p);
-        if (el) el.classList.add('hidden');
-    });
-    const target = document.getElementById('page-' + pageName);
-    if (target) target.classList.remove('hidden');
+    ['home', 'auth', 'profile', 'admin', 'about'].forEach(p => document.getElementById('page-' + p).classList.add('hidden'));
+    document.getElementById('page-' + pageName).classList.remove('hidden');
     const backBtn = document.getElementById('backButtonContainer');
     if (backBtn) backBtn.style.display = (pageName === 'home') ? 'none' : 'block';
     if(pageName === 'profile') { switchUserTab('orders'); loadProfileData(); }
@@ -90,28 +86,13 @@ function togglePassword(inputId, icon) {
 
 async function initAuth() {
     const { data: { session } } = await db.auth.getSession();
-    await setUser(session ? session.user : null);
-    db.auth.onAuthStateChange(async (_e, session) => {
-        await setUser(session ? session.user : null);
-    });
+    setUser(session ? session.user : null);
+    db.auth.onAuthStateChange((_e, session) => setUser(session ? session.user : null));
 }
 
-// ==========================================
-// حماية صارمة: منع الدخول قبل تأكيد البريد الإلكتروني
-// ==========================================
-async function setUser(user) {
-    if (user && !user.email_confirmed_at) {
-        await db.auth.signOut();
-        currentUser = null;
-        showToast('يرجى تأكيد بريدك الإلكتروني أولاً من الرسالة المرسلة إليك قبل الدخول!', 'error');
-        showPage('auth');
-        return;
-    }
-
+function setUser(user) {
     currentUser = user;
     const nav = document.getElementById('navActions');
-    if (!nav) return;
-
     if (user) {
         const username = user.user_metadata?.username || 'مستخدم';
         const isAdmin = user.id === '04a16772-0bf9-4acd-8007-ab7f1e085751';
@@ -140,59 +121,11 @@ function switchAuthTab(t) {
     document.getElementById('formSignup').classList.toggle('hidden', t !== 'signup');
 }
 
-// ==========================================
-// إرسال رابط التأكيد للدخول المباشر (Magic Link)
-// ==========================================
-async function sendLoginMagicLink() {
-    const emailInput = document.getElementById('otpEmail') || document.getElementById('loginEmail');
-    const email = emailInput ? emailInput.value.trim() : '';
-    if (!email) {
-        showToast('يرجى إدخال البريد الإلكتروني أولاً', 'error');
-        return;
-    }
-
-    const { error } = await db.auth.signInWithOtp({
-        email: email,
-        options: {
-            shouldCreateUser: true,
-            emailRedirectTo: window.location.origin + window.location.pathname
-        }
-    });
-
-    if (error) {
-        showToast('خطأ في إرسال الرابط: ' + error.message, 'error');
-    } else {
-        showToast('تم إرسال رابط التأكيد إلى بريدك الإلكتروني! 📧 افتح بريدك واضغط على الزر للدخول.');
-    }
-}
-
 async function handleLogin(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnLogin');
-    if (btn) { btn.disabled = true; btn.textContent = 'جاري...'; }
-
-    const email = document.getElementById('loginEmail').value.trim();
-    const passwordInput = document.getElementById('loginPassword');
-
-    if (!passwordInput) {
-        await sendLoginMagicLink();
-        if (btn) { btn.disabled = false; btn.textContent = 'إرسال رابط الدخول'; }
-        return;
-    }
-
-    const { data, error } = await db.auth.signInWithPassword({ email: email, password: passwordInput.value });
-    if (error) {
-        showToast('خطأ: ' + (error.message === 'Email not confirmed' ? 'يجب تأكيد بريدك الإلكتروني أولاً من الرابط المرسل إليك!' : (error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : error.message)), 'error');
-        if (btn) { btn.disabled = false; btn.textContent = 'دخول'; }
-    } else if (data?.user && !data.user.email_confirmed_at) {
-        await db.auth.signOut();
-        showToast('يرجى تأكيد بريدك الإلكتروني أولاً قبل الدخول!', 'error');
-        if (btn) { btn.disabled = false; btn.textContent = 'دخول'; }
-    } else {
-        showToast('مرحباً بك!');
-        showPage('home');
-        if (btn) { btn.disabled = false; btn.textContent = 'دخول'; }
-    }
+    e.preventDefault(); const btn = document.getElementById('btnLogin'); btn.disabled = true; btn.textContent = 'جاري...';
+    const { error } = await db.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPassword').value });
+    if (error) { showToast('خطأ: ' + (error.message === 'Invalid login credentials' ? 'البريد أو كلمة المرور غير صحيحة' : error.message), 'error'); btn.disabled = false; btn.textContent = 'دخول'; } 
+    else { showToast('مرحباً!'); showPage('home'); }
 }
 
 function generateUsername(name) {
@@ -202,7 +135,7 @@ function generateUsername(name) {
 }
 
 // ==========================================
-// إنشاء حساب جديد مع إجبار تأكيد البريد الإلكتروني
+// دالة التسجيل المحدثة (ترسل رابط مباشر للتأكيد عبر البريد)
 // ==========================================
 async function handleSignup(e) {
     e.preventDefault(); 
@@ -211,15 +144,14 @@ async function handleSignup(e) {
     btn.textContent = 'جاري...';
     
     const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value.trim();
+    const email = document.getElementById('signupEmail').value;
     const password = document.getElementById('signupPassword').value;
     const username = generateUsername(name);
 
-    const { data, error } = await db.auth.signUp({ 
+    const { error } = await db.auth.signUp({ 
         email: email, 
         password: password, 
         options: { 
-            emailRedirectTo: window.location.origin + window.location.pathname,
             data: { full_name: name, username: username } 
         } 
     });
@@ -230,14 +162,10 @@ async function handleSignup(e) {
         btn.textContent = 'إنشاء حساب'; 
     } 
     else { 
-        if (data?.session && !data.user?.email_confirmed_at) {
-            await db.auth.signOut();
-        }
         showToast('تم إرسال رابط التأكيد إلى بريدك الإلكتروني! 📧'); 
         btn.disabled = false;
         btn.textContent = 'إنشاء حساب';
-        alert("لن يفتح حسابك إلا بعد تأكيد البريد. يرجى فتح بريدك الإلكتروني والضغط على زر التأكيد المرسل إليك.");
-        switchAuthTab('login');
+        alert("يرجى التحقق من بريدك الإلكتروني والضغط على الرابط المرسل لتفعيل حسابك.");
     }
 }
 
@@ -288,7 +216,7 @@ async function loadWishlist() {
 
 async function toggleWishlist(id, event) {
     event.stopPropagation();
-    if (!currentUser) { showToast('سجل دخول وأكد بريدك أولاً', 'error'); showPage('auth'); return; }
+    if (!currentUser) { showToast('سجل دخول أولاً', 'error'); showPage('auth'); return; }
     if (userWishlistIds.includes(id)) {
         await db.from('wishlist').delete().eq('user_id', currentUser.id).eq('product_id', id);
         userWishlistIds = userWishlistIds.filter(x => x !== id); showToast('تمت الإزالة');
@@ -336,7 +264,6 @@ async function loadProducts() {
 
 function renderProducts(list) {
     const g = document.getElementById('productsGrid');
-    if (!g) return;
     if (!list.length) { g.innerHTML = '<p>لا توجد منتجات</p>'; return; }
     g.innerHTML = list.map(p => {
         let finalPrice = Number(p.price), priceHtml = `${finalPrice.toLocaleString('ar-IQ')} د.ع`, badgeHtml = '', countdownHtml = '';
@@ -439,7 +366,6 @@ function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
 function updateCartUI() {
     const countEl = document.getElementById('cartCount'); if (countEl) countEl.textContent = cart.reduce((s, i) => s + i.qty, 0);
     const container = document.getElementById('cartItems'), footer = document.getElementById('cartFooter');
-    if (!container || !footer) return;
     if (!cart.length) { container.innerHTML = '<p style="text-align:center;">السلة فارغة</p>'; footer.style.display = 'none'; return; }
     container.innerHTML = cart.map(i => `<div class="cart-item-row"><div><b>${i.name}</b><br><span style="color:var(--orange)">${(i.price * i.qty).toLocaleString()} د.ع</span></div><div style="display:flex;align-items:center;gap:5px;"><button onclick="changeQty(${i.id}, -1)">-</button><span>${i.qty}</span><button onclick="changeQty(${i.id}, 1)">+</button></div></div>`).join('');
     document.getElementById('cartTotal').textContent = cart.reduce((s, i) => s + (i.price * i.qty), 0).toLocaleString() + ' د.ع';
@@ -448,7 +374,7 @@ function updateCartUI() {
 
 function changeQty(id, delta) { const item = cart.find(x => x.id === id); if (!item) return; item.qty += delta; if (item.qty <= 0) cart = cart.filter(x => x.id !== id); saveCart(); updateCartUI(); }
 
-function openCheckout() { if (!currentUser) { showToast('سجل دخول وأكد بريدك أولاً', 'error'); toggleCart(); showPage('auth'); return; } appliedDiscountAmount = 0; document.getElementById('couponCode').value = ""; updateChkTotals(); document.getElementById('checkoutModal').classList.add('active'); toggleCart(); }
+function openCheckout() { if (!currentUser) { showToast('سجل دخول أولاً', 'error'); toggleCart(); showPage('auth'); return; } appliedDiscountAmount = 0; document.getElementById('couponCode').value = ""; updateChkTotals(); document.getElementById('checkoutModal').classList.add('active'); toggleCart(); }
 
 async function applyCoupon() {
     const code = document.getElementById('couponCode').value.trim().toUpperCase();
@@ -588,7 +514,7 @@ async function loadAdminData() {
     document.getElementById('statProductsCount').textContent = allProducts.length;
     document.getElementById('statTotalStock').textContent = totalStockCount;
     renderAdminProducts(); renderAdminOrders(allOrderItems); renderLowStock(); loadCoupons();
-    if(document.getElementById('adminReportsSection') && !document.getElementById('adminReportsSection').classList.contains('hidden')) { renderSalesChart(); }
+    if(document.getElementById('adminReportsSection') && !document.getElementById('adminReportsSection'].classList.contains('hidden')) { renderSalesChart(); }
 }
 
 function renderSalesChart() {
@@ -753,7 +679,7 @@ async function submitNewProduct(e) {
 }
 
 function openQuickOrder(productId) {
-    if (!currentUser) { showToast('سجل دخول وأكد بريدك أولاً للطلب السريع', 'error'); showPage('auth'); return; }
+    if (!currentUser) { showToast('سجل دخول أولاً للطلب السريع', 'error'); showPage('auth'); return; }
     const p = allProducts.find(x => x.id === productId);
     if (!p || p.stock <= 0) { showToast('المنتج غير متوفر', 'error'); return; }
     document.getElementById('quickOrderProductId').value = productId; document.getElementById('quickOrderProductName').textContent = p.name;
@@ -762,48 +688,80 @@ function openQuickOrder(productId) {
 }
 
 async function submitQuickOrder(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnQuickOrder');
-    btn.disabled = true;
-    const productId = Number(document.getElementById('quickOrderProductId').value);
-    const p = allProducts.find(x => x.id === productId);
-    if (!p) { showToast('المنتج غير موجود', 'error'); btn.disabled = false; return; }
-
-    const ft = Number(p.price) - (p.discount > 0 ? Number(p.price) * (p.discount / 100) : 0);
-    const { data, error } = await db.from('orders').insert([{ 
-        user_id: currentUser.id, 
-        total: ft, 
-        status: 'pending', 
-        customer_name: document.getElementById('quickName').value, 
-        customer_phone: document.getElementById('quickPhone').value, 
-        customer_address: document.getElementById('quickAddress').value, 
-        coupon_used: '', 
-        delivery_cost: 0, 
-        delivery_time: 'قيد التحديد'
-    }]).select();
-
-    if (error) { 
-        showToast(error.message, 'error'); 
-        btn.disabled = false; 
-    } else { 
-        const earned = Math.floor(ft / 1000);
-        const { data: profile } = await db.from('profiles').select('loyalty_points').eq('id', currentUser.id).single();
+    e.preventDefault(); const btn = document.getElementById('btnQuickOrder'); btn.disabled = true;
+    const pid = document.getElementById('quickOrderProductId').value; const p = allProducts.find(x => x.id === parseInt(pid));
+    let finalPrice = Number(p.price); if(p.discount > 0) finalPrice -= (finalPrice * (p.discount / 100));
+    const { error } = await db.from('orders').insert([{ user_id: currentUser.id, total: finalPrice, status: 'pending', customer_name: document.getElementById('quickName').value, customer_phone: document.getElementById('quickPhone').value, customer_address: document.getElementById('quickAddress').value, delivery_cost: 0, delivery_time: 'قيد التحديد' }]).select();
+    if (error) { showToast(error.message, 'error'); btn.disabled = false; }
+    else {
+        const earned = Math.floor(finalPrice / 1000); const { data: profile } = await db.from('profiles').select('loyalty_points').eq('id', currentUser.id).single();
         if (profile) await db.from('profiles').update({ loyalty_points: (profile.loyalty_points || 0) + earned }).eq('id', currentUser.id);
-        
-        await db.from('order_items').insert([{ 
-            order_id: data[0].id, 
-            product_id: p.id, 
-            product_name: p.name, 
-            product_image: p.image_url || null, 
-            qty: 1, 
-            price: ft 
-        }]);
-
-        await db.rpc('decrease_stock', { p_id: p.id, qty: 1 });
-        
-        document.getElementById('invoiceId').textContent = '#' + data[0].id; 
-        document.getElementById('quickOrderModal').classList.remove('active'); 
-        document.getElementById('invoiceModal').classList.add('active'); 
-        btn.disabled = false; 
+        showToast('تم استلام طلبك السريع! 🎉'); closeModal('quickOrderModal'); btn.disabled = false;
     }
 }
+
+function shareProduct() {
+    const p = allProducts.find(x => x.id === activeProductId); if (!p) return;
+    const url = window.location.origin + window.location.pathname + '?product=' + p.id;
+    if (navigator.share) { navigator.share({ title: p.name, text: 'شاهد هذا المنتج في متجر يساعدكم!', url: url }); } else { navigator.clipboard.writeText(url); showToast('تم نسخ رابط المنتج! 📋'); }
+}
+
+async function loadMarquee() {
+    const { data } = await db.from('site_settings').select('marquee_text, marquee_active').eq('id', 1).single();
+    if(data) {
+        const marqueeBar = document.getElementById('marqueeBar');
+        if (marqueeBar) {
+            if (data.marquee_active === true) { marqueeBar.style.display = 'block'; document.getElementById('marqueeText').textContent = data.marquee_text || ''; } 
+            else { marqueeBar.style.display = 'none'; }
+        }
+        const textInput = document.getElementById('marqueeTextInput'); if(textInput) textInput.value = data.marquee_text || '';
+    }
+}
+
+async function toggleMarquee(state) { await db.from('site_settings').update({ marquee_active: state }).eq('id', 1); showToast(state ? 'تم تشغيل الشريط' : 'تم إيقاف الشريط'); loadMarquee(); }
+
+async function handleUpdateMarquee(e) {
+    e.preventDefault(); const text = document.getElementById('marqueeTextInput').value.trim(); const btn = document.getElementById('btnMarquee'); btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+    const { error } = await db.from('site_settings').update({ marquee_text: text }).eq('id', 1);
+    if(error) showToast('خطأ: ' + error.message, 'error'); else { showToast('تم تحديث النص!'); loadMarquee(); }
+    btn.disabled = false; btn.textContent = 'حفظ النص';
+}
+
+async function loadCategories() {
+    const { data } = await db.from('categories').select('*').order('id', { ascending: false });
+    const list = document.getElementById('categoriesList'); if(list) { list.innerHTML = data && data.length ? data.map(c => `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding:10px 0;"><span>${c.name}</span><button onclick="deleteCategory(${c.id})" class="btn-delete"><i class="fas fa-trash"></i></button></div>`).join('') : '<p>لا توجد أقسام حالياً.</p>'; }
+    const filterBar = document.getElementById('categoryFilterBar'); if(filterBar) { filterBar.innerHTML = `<button class="nav-btn nav-btn-login active" onclick="filterByCategory('all', this)">الكل</button>` + (data || []).map(c => `<button class="nav-btn nav-btn-login" onclick="filterByCategory('${c.name}', this)">${c.name}</button>`).join(''); }
+    const select = document.getElementById('pCategory'); if(select) { select.innerHTML = '<option value="">-- اختر القسم --</option>' + (data || []).map(c => `<option value="${c.name}">${c.name}</option>`).join(''); }
+}
+
+async function submitNewCategory(e) {
+    e.preventDefault(); const name = document.getElementById('newCategoryName').value.trim(); if(!name) return;
+    const { error } = await db.from('categories').insert([{ name: name }]);
+    if(error) showToast('خطأ: ' + error.message, 'error'); else { showToast('تمت إضافة القسم!'); document.getElementById('newCategoryName').value = ''; loadCategories(); }
+}
+
+async function deleteCategory(id) { if(!confirm('حذف هذا القسم؟')) return; const { error } = await db.from('categories').delete().eq('id', id); if(error) showToast('خطأ: ' + error.message, 'error'); else { showToast('تم حذف القسم'); loadCategories(); } }
+
+async function loadCoupons() {
+    const { data } = await db.from('coupons').select('*').order('id', { ascending: false });
+    const list = document.getElementById('couponsList'); if(!list) return;
+    list.innerHTML = data && data.length ? data.map(c => `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding:10px 0;"><div><b style="color:var(--orange);">${c.code}</b> - خصم ${c.discount_percent}%<br><small style="color:${c.used_count >= c.max_uses ? 'var(--red)' : 'var(--gray)'};">تم استخدام: ${c.used_count} من ${c.max_uses} ${c.used_count >= c.max_uses ? '(منتهي)' : ''}</small></div><button onclick="deleteCoupon(${c.id})" class="btn-delete"><i class="fas fa-trash"></i></button></div>`).join('') : '<p>لا توجد أكواد خصم حالياً.</p>';
+}
+
+async function submitNewCoupon(e) {
+    e.preventDefault(); const code = document.getElementById('couponCodeInput').value.trim().toUpperCase(); const percent = parseInt(document.getElementById('couponPercent').value); const maxUses = parseInt(document.getElementById('couponMaxUses').value);
+    const { error } = await db.from('coupons').insert([{ code: code, discount_percent: percent, max_uses: maxUses }]);
+    if(error) showToast('خطأ: ' + (error.message.includes('duplicate') ? 'هذا الكود موجود مسبقاً' : error.message), 'error'); else { showToast('تم إنشاء كود الخصم! 🎟️'); document.getElementById('couponCodeInput').value = ''; loadCoupons(); }
+}
+
+async function deleteCoupon(id) { if(!confirm('حذف كود الخصم؟')) return; const { error } = await db.from('coupons').delete().eq('id', id); if(error) showToast('خطأ: ' + error.message, 'error'); else { showToast('تم الحذف'); loadCoupons(); } }
+
+function showToast(m, t = 'success') { const el = document.getElementById('toast'); el.textContent = m; el.style.background = t === 'error' ? '#dc3545' : '#28a745'; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); }
+
+document.addEventListener('DOMContentLoaded', () => { 
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const icon = document.getElementById('themeIcon'); if(icon) icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    initAuth(); loadProducts(); loadMarquee(); loadCategories();
+    setInterval(() => { if (currentUser && currentUser.id === '04a16772-0bf9-4acd-8007-ab7f1e085751') { loadAdminData(); } }, 30000);
+});
