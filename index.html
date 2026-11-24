@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="الموقع الشخصي لعبد الرحمن وليد الشبلي: مبرمج، فاحص مواقع، ومطوّر بوتات تيليجرام">
-  <title>عبد الرحمن وليد الشبلي</title>
+  <meta name="description" content="السيرة الذاتية والموقع الشخصي لعبد الرحمن وليد الشبلي: بكالوريوس، مطوّر مواقع (HTML, CSS, JavaScript, Python) وبوتات تيليجرام">
+  <title>عبد الرحمن وليد الشبلي | مطوّر مواقع وبوتات</title>
   <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -19,13 +19,15 @@
       <a href="#home" class="active">الرئيسية</a>
       <a href="#about">عني</a>
       <a href="#who">من هو عبد الرحمن</a>
+      <a href="#cv">السيرة الذاتية</a>
+      <a href="#services">خدماتي</a>
       <a href="#projects">أعمالي</a>
       <a href="#contact">التواصل</a>
     </nav>
     <div class="side-links">
       <button class="theme-btn" id="themeBtn">تبديل الوضع: ليلي / نهاري</button>
-      <a href="https://wa.me/9647XXXXXXXXX" target="_blank" rel="noopener">واتساب</a>
-      <a href="https://instagram.com/USERNAME" target="_blank" rel="noopener">انستغرام</a>
+      <a href="https://wa.me/9647725372995" target="_blank" rel="noopener">واتساب</a>
+      <a href="https://instagram.com/25ff99" target="_blank" rel="noopener">انستغرام</a>
     </div>
   </aside>
 
@@ -35,10 +37,11 @@
         <p class="tag">أهلاً، أنا</p>
         <h1>عبد الرحمن وليد الشبلي</h1>
         <p class="lead">أعمل كـ <span class="typed" id="typed"></span><i class="cursor"></i></p>
-        <p class="sub">حاصل على دبلوم تقنيات الإدارة القانونية، وأحوّل الأفكار إلى مواقع وأدوات تعمل فعلاً.</p>
+        <p class="sub">حاصل على شهادة البكالوريوس، أطوّر المواقع بـ HTML وCSS وJavaScript وPython، وأبرمج بوتات تيليجرام.</p>
         <div class="actions">
           <a class="btn" href="#projects">شاهد أعمالي</a>
           <a class="btn ghost" href="#contact">تواصل معي</a>
+          <button class="btn ghost" id="cvBtn">حفظ السيرة PDF</button>
         </div>
       </div>
       <div class="terminal" aria-hidden="true">
@@ -53,31 +56,54 @@
 
     <section id="about" class="reveal">
       <h2>عني</h2>
-      <p>أجمع بين الفهم القانوني والمهارة التقنية. أتخصص في <b>البرمجة</b> و<b>فحص المواقع</b> وبناء <b>بوتات تيليجرام</b>، وأحب بناء أدوات تسهّل العمل وتوفّر الوقت.</p>
+      <p>خريج <b>بكالوريوس</b>، أجمع بين التحصيل الأكاديمي والمهارة العملية في <b>تطوير المواقع</b> و<b>برمجة بوتات تيليجرام</b>. أحب بناء أدوات واضحة وسريعة تحل مشكلة حقيقية وتوفّر الوقت.</p>
       <div class="skills">
-        <div class="skill"><h3>برمجة المواقع</h3><div class="meter" data-v="85"><i></i></div><small>85%</small></div>
-        <div class="skill"><h3>فحص المواقع</h3><div class="meter" data-v="75"><i></i></div><small>75%</small></div>
+        <div class="skill"><h3>HTML</h3><div class="meter" data-v="90"><i></i></div><small>90%</small></div>
+        <div class="skill"><h3>CSS</h3><div class="meter" data-v="85"><i></i></div><small>85%</small></div>
+        <div class="skill"><h3>JavaScript</h3><div class="meter" data-v="80"><i></i></div><small>80%</small></div>
+        <div class="skill"><h3>Python</h3><div class="meter" data-v="85"><i></i></div><small>85%</small></div>
         <div class="skill"><h3>بوتات تيليجرام</h3><div class="meter" data-v="90"><i></i></div><small>90%</small></div>
-        <div class="skill"><h3>أتمتة المهام</h3><div class="meter" data-v="70"><i></i></div><small>70%</small></div>
+        <div class="skill"><h3>فحص المواقع</h3><div class="meter" data-v="75"><i></i></div><small>75%</small></div>
       </div>
-      <div class="chips"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Python</span><span>Telegram API</span><span>Git</span></div>
+      <div class="chips"><span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>Python</span><span>Telegram Bot API</span><span>Git</span><span>تصميم متجاوب</span></div>
     </section>
 
     <section id="who" class="reveal">
       <h2>من هو عبد الرحمن</h2>
-      <p>شاب عراقي شغوف بالتقنية، بدأ بتعلّم البرمجة ليحوّل أفكاره إلى أدوات حقيقية، ويؤمن أن التقنية تخدم القانون والإدارة.</p>
+      <p>شاب عراقي شغوف بالتقنية، بدأ بتعلّم البرمجة ليحوّل أفكاره إلى أدوات حقيقية. يؤمن أن الكود الجيد بسيط وواضح، ويطوّر مهاراته كل يوم.</p>
       <div class="stats">
         <div><b data-n="10">0</b><span>مشاريع</span></div>
         <div><b data-n="5">0</b><span>بوتات</span></div>
-        <div><b data-n="3">0</b><span>سنوات تعلّم</span></div>
+        <div><b data-n="4">0</b><span>لغات وتقنيات</span></div>
         <div><b data-n="100">0</b><span>% شغف</span></div>
       </div>
       <ol class="timeline">
-        <li><b>دبلوم تقنيات الإدارة القانونية</b><span>الدراسة الأكاديمية</span></li>
-        <li><b>بداية تعلّم البرمجة</b><span>HTML وPython</span></li>
-        <li><b>أول بوت تيليجرام</b><span>أتمتة الردود والخدمات</span></li>
-        <li><b>فحص المواقع</b><span>اختبار الأداء والأمان</span></li>
+        <li><b>شهادة البكالوريوس</b><span>الدراسة الأكاديمية</span></li>
+        <li><b>بداية تعلّم البرمجة</b><span>HTML وCSS وJavaScript</span></li>
+        <li><b>تعلّم Python</b><span>سكربتات وأتمتة ومنطق خلفي</span></li>
+        <li><b>بوتات تيليجرام</b><span>إنشاء وبرمجة بوتات كاملة</span></li>
+        <li><b>فحص المواقع</b><span>اختبار الأداء والأخطاء</span></li>
       </ol>
+    </section>
+
+    <section id="cv" class="reveal">
+      <h2>السيرة الذاتية</h2>
+      <div class="cv">
+        <div class="cv-box"><h3>المعلومات الشخصية</h3><ul><li>الاسم: عبد الرحمن وليد الشبلي</li><li>البلد: العراق</li><li>الهاتف / واتساب: 07725372995</li><li>انستغرام: 25ff99</li></ul></div>
+        <div class="cv-box"><h3>المؤهل العلمي</h3><ul><li>شهادة البكالوريوس</li></ul></div>
+        <div class="cv-box"><h3>المهارات التقنية</h3><ul><li>تطوير المواقع بـ HTML وCSS وJavaScript</li><li>البرمجة بلغة Python</li><li>إنشاء وبرمجة بوتات تيليجرام</li><li>فحص المواقع واختبارها</li></ul></div>
+        <div class="cv-box"><h3>المهارات الشخصية</h3><ul><li>حل المشكلات</li><li>التعلّم الذاتي السريع</li><li>الدقة والالتزام بالمواعيد</li><li>العمل ضمن فريق</li></ul></div>
+      </div>
+    </section>
+
+    <section id="services" class="reveal">
+      <h2>خدماتي</h2>
+      <div class="grid">
+        <article class="proj"><h3>تصميم وبرمجة مواقع</h3><p>مواقع شخصية وتعريفية سريعة ومتجاوبة مع الجوال.</p></article>
+        <article class="proj"><h3>بوتات تيليجرام</h3><p>بوتات للردود الآلية والخدمات والإدارة والاشتراكات.</p></article>
+        <article class="proj"><h3>أتمتة بـ Python</h3><p>سكربتات تنجز المهام المتكررة وتعالج الملفات والبيانات.</p></article>
+        <article class="proj"><h3>فحص المواقع</h3><p>كشف الأخطاء والروابط المكسورة ومشاكل السرعة.</p></article>
+      </div>
     </section>
 
     <section id="projects" class="reveal">
@@ -85,17 +111,22 @@
       <div class="grid">
         <article class="proj"><h3>بوت تيليجرام للخدمات</h3><p>رد تلقائي وقوائم أوامر وإدارة مستخدمين.</p><div class="chips"><span>Python</span><span>Telegram</span></div></article>
         <article class="proj"><h3>أداة فحص المواقع</h3><p>تفحص الروابط والأخطاء وسرعة التحميل.</p><div class="chips"><span>JavaScript</span><span>Python</span></div></article>
-        <article class="proj"><h3>الموقع الشخصي</h3><p>موقع سريع ومتجاوب بوضعين ليلي ونهاري.</p><div class="chips"><span>HTML</span><span>CSS</span></div></article>
+        <article class="proj"><h3>الموقع الشخصي</h3><p>موقع متجاوب بوضعين ليلي ونهاري.</p><div class="chips"><span>HTML</span><span>CSS</span><span>JS</span></div></article>
       </div>
     </section>
 
     <section id="contact" class="reveal">
       <h2>التواصل</h2>
-      <p>عندك فكرة أو تحتاج بوت أو موقع؟ راسلني.</p>
+      <p>عندك فكرة أو تحتاج بوت أو موقع؟ اكتب رسالتك وتوصلني مباشرة على واتساب.</p>
+      <form class="form" id="waForm">
+        <input id="fName" placeholder="اسمك" required>
+        <textarea id="fMsg" rows="4" placeholder="شنو تحتاج؟" required></textarea>
+        <button class="btn" type="submit">إرسال عبر واتساب</button>
+      </form>
       <div class="contact-row">
-        <a class="card wa" href="https://wa.me/9647XXXXXXXXX" target="_blank" rel="noopener"><strong>واتساب</strong><span>راسلني مباشرة</span></a>
-        <a class="card ig" href="https://instagram.com/USERNAME" target="_blank" rel="noopener"><strong>انستغرام</strong><span>تابع أعمالي</span></a>
-        <a class="card tg" href="https://t.me/USERNAME" target="_blank" rel="noopener"><strong>تيليجرام</strong><span>تحدّث معي</span></a>
+        <a class="card wa" href="https://wa.me/9647725372995" target="_blank" rel="noopener"><strong>واتساب</strong><span dir="ltr">0772 537 2995</span></a>
+        <a class="card ig" href="https://instagram.com/25ff99" target="_blank" rel="noopener"><strong>انستغرام</strong><span dir="ltr">@25ff99</span></a>
+        <button class="card copy" id="copyBtn"><strong>نسخ الرقم</strong><span id="copyTxt">07725372995</span></button>
       </div>
     </section>
 
