@@ -62,3 +62,20 @@ addEventListener("scroll", () => {
 });
 top.onclick = () => scrollTo({ top: 0, behavior: "smooth" });
 $("#year").textContent = new Date().getFullYear();
+
+// حفظ السيرة كـ PDF (من نافذة الطباعة)
+$("#cvBtn").onclick = () => { document.querySelectorAll(".reveal").forEach((s) => s.classList.add("in")); location.hash = "#cv"; setTimeout(() => print(), 400); };
+
+// نموذج التواصل يفتح واتساب برسالة جاهزة
+$("#waForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = `السلام عليكم، أنا ${$("#fName").value}\n${$("#fMsg").value}`;
+  window.open("https://wa.me/9647725372995?text=" + encodeURIComponent(text), "_blank", "noopener");
+});
+
+// نسخ الرقم
+$("#copyBtn").onclick = async () => {
+  try { await navigator.clipboard.writeText("07725372995"); $("#copyTxt").textContent = "تم النسخ ✔"; }
+  catch (e) { $("#copyTxt").textContent = "07725372995"; }
+  setTimeout(() => ($("#copyTxt").textContent = "07725372995"), 1800);
+};
