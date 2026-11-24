@@ -86,3 +86,17 @@ footer{text-align:center;padding:30px;color:var(--muted);font-size:.9rem;border-
 @media(max-width:900px){.hero{grid-template-columns:1fr;padding-top:90px}.terminal{max-width:420px}}
 @media(max-width:800px){.menu-btn{display:block}.sidebar{transform:translateX(100%)}.sidebar.open{transform:none}.overlay.show{display:block}main{margin-right:0}section{padding:70px 6vw}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+/* السيرة والنموذج */
+.cv{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:24px}
+.cv-box{background:var(--card);border:1px solid var(--line);border-right:4px solid var(--gold);border-radius:12px;padding:18px 22px}
+.cv-box h3{font-size:1.1rem;margin-bottom:8px;color:var(--teal)}
+.cv-box ul{list-style:none;color:var(--muted);font-size:.98rem}
+.cv-box li::before{content:"✓ ";color:var(--gold)}
+.form{display:grid;gap:12px;max-width:520px;margin:22px 0}
+.form input,.form textarea{font:inherit;background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.form input:focus,.form textarea:focus{border-color:var(--teal);outline:0}
+.form .btn{border:0;cursor:pointer;font:inherit;font-weight:700}
+.card.copy{background:var(--card);border:1px solid var(--line);color:var(--text);cursor:pointer;font:inherit;text-align:right}
+button.btn.ghost{cursor:pointer;font:inherit;font-weight:700}
+@media print{.sidebar,.menu-btn,.top,.progress,.hero,.form,.actions,.terminal{display:none!important}main{margin:0}.reveal{opacity:1!important;transform:none!important}body{background:#fff;color:#000}section{padding:20px;break-inside:avoid}#cv{display:block}}
