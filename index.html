@@ -1,346 +1,244 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#123b30">
-    <meta name="description" content="الموقع الشخصي لعبد الرحمن وليد هاشم - مطور مواقع وبرمجيات ومهتم بالتحول الرقمي والأمن السيبراني">
-    <title>عبد الرحمن وليد هاشم | الموقع الشخصي</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>عبد الرحمن وليد هاشم | تطوير وفحص المواقع وبوتات التليجرام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <div class="page-loader" id="pageLoader">
-        <div class="loader-circle"></div>
-        <p>جاري تجهيز الموقع...</p>
+    <!-- شريط إعلاني متحرك للتحول الرقمي والتجارة الإلكترونية -->
+    <div class="announcement-bar">
+        <div class="ticker-track">
+            <span>🚀 انقل مشروعك إلى التحول الرقمي والتجارة الإلكترونية باحترافية وأمان</span>
+            <span>🛡️ فحص شامل للمواقع واكتشاف الثغرات وتحسين الأداء</span>
+            <span>🤖 برمجة بوتات تليجرام ذكية لإدارة الطلبات والمتاجر والقنوات</span>
+            <span>🚀 انقل مشروعك إلى التحول الرقمي والتجارة الإلكترونية باحترافية وأمان</span>
+        </div>
     </div>
 
-    <button class="menu-toggle" id="menuToggle" aria-label="فتح القائمة">☰</button>
+    <!-- الهيدر العلوي -->
+    <header>
+        <a href="#home" class="logo">عبد الرحمن <span>وليد</span></a>
+        <button class="menu-btn" id="openMenu" aria-label="فتح القائمة">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
 
-    <div class="overlay" id="overlay"></div>
+    <!-- أيقونة التليجرام العائمة -->
+    <a href="https://t.me/+9647725372995" target="_blank" class="floating-telegram" title="تواصل عبر تليجرام">
+        <i class="fab fa-telegram-plane"></i>
+    </a>
+
+    <!-- طبقة التعتيم والقائمة الجانبية -->
+    <div class="sidebar-overlay" id="overlay"></div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="profile">
-            <div class="profile-avatar">ع</div>
-            <h2>عبد الرحمن وليد هاشم</h2>
-            <p>مطور ومهتم بالتكنولوجيا</p>
+        <div class="sidebar-header">
+            <button class="close-btn" id="closeMenu" aria-label="إغلاق القائمة">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
 
-        <div class="sidebar-label">القائمة الرئيسية</div>
+        <a href="tel:+9647725372995" class="call-me-btn">Call me</a>
 
-        <nav class="navigation">
-            <a href="#home" class="active"><span>⌂</span> الرئيسية</a>
-            <a href="#about"><span>♙</span> من أنا؟</a>
-            <a href="#skills"><span>✦</span> المهارات</a>
-            <a href="#services"><span>⚙</span> الخدمات</a>
-            <a href="#projects"><span>▣</span> المشاريع</a>
-            <a href="#digital"><span>◈</span> التحول الرقمي</a>
-            <a href="#contact"><span>✉</span> التواصل</a>
-        </nav>
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-item">الرئيسية</a></li>
+            <li><a href="#about" class="nav-item">عني</a></li>
+            <li><a href="#services" class="nav-item">الخدمات</a></li>
+            <li><a href="#digital" class="nav-item">التحول الرقمي والتجارة</a></li>
+            <li><a href="#certificates" class="nav-item">الشهادات</a></li>
+            <li><a href="#contact" class="nav-item">الاتصال</a></li>
+        </ul>
 
-        <div class="sidebar-bottom">
-            <p>متاح للتعاون والمشاريع التقنية</p>
-            <span class="availability"><i></i> متاح للتواصل</span>
+        <div class="sidebar-socials">
+            <a href="https://www.instagram.com/25ff99" target="_blank" title="إنستقرام"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/9647725372995" target="_blank" title="واتساب"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://t.me/+9647725372995" target="_blank" title="تليجرام"><i class="fab fa-telegram"></i></a>
+            <a href="tel:+9647725372995" title="اتصال هاتفي"><i class="fas fa-phone-alt"></i></a>
         </div>
     </aside>
 
-    <main class="main-content">
+    <!-- قسم الرئيسية -->
+    <section id="home" class="hero">
+        <div class="badge">برمجة المواقع • فحص المواقع • بوتات التليجرام • التحول الرقمي</div>
+        <h1>مرحباً، أنا <span>عبد الرحمن وليد هاشم</span></h1>
+        <p>
+            حاصل على شهادة دبلوم تقنيات الإدارة القانونية من كلية البوليتكنيك نينوى، ومتخصص في برمجة المواقع الإلكترونية، فحص المواقع، وبرمجة بوتات التليجرام، ومساعدة المشاريع على الانتقال نحو التحول الرقمي والتجارة الإلكترونية.
+        </p>
+        <div class="hero-btns">
+            <a href="#services" class="btn-primary">استكشف الخدمات</a>
+            <a href="#contact" class="btn-outline">تواصل معي</a>
+        </div>
+    </section>
 
-        <header class="topbar">
-            <div class="topbar-title">الموقع الشخصي</div>
-            <button class="theme-toggle" id="themeToggle" aria-label="تغيير المظهر">☾</button>
-        </header>
-
-        <section id="home" class="hero">
-            <div class="hero-content reveal">
-                <span class="welcome-badge">مرحباً بك في مساحتي الرقمية</span>
-
-                <h1>
-                    أنا <span>عبد الرحمن وليد هاشم</span>
-                </h1>
-
-                <h2>مهتم بالبرمجة والتكنولوجيا</h2>
-
-                <p>
-                    أعمل على تطوير المواقع والأنظمة الرقمية وبناء
-                    الحلول البرمجية، وأسعى إلى توظيف التكنولوجيا
-                    في تحسين الأعمال والخدمات.
-                </p>
-
-                <div class="hero-buttons">
-                    <a href="#about" class="main-button">تعرف عليّ</a>
-                    <a href="#contact" class="outline-button">تواصل معي</a>
-                </div>
-
-                <div class="hero-tags">
-                    <span>Python</span>
-                    <span>HTML</span>
-                    <span>CSS</span>
-                    <span>JavaScript</span>
-                    <span>Cybersecurity</span>
-                </div>
-            </div>
-
-            <div class="hero-decoration">
-                <div class="decoration-circle">
-                    <div class="code-symbol">&lt;/&gt;</div>
-                    <span class="floating-icon icon-one">⚙</span>
-                    <span class="floating-icon icon-two">⌘</span>
-                    <span class="floating-icon icon-three">✦</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" class="section reveal">
-            <div class="section-heading">
-                <span>نبذة تعريفية</span>
-                <h2>من هو عبد الرحمن؟</h2>
-                <p>التعليم والخبرات والاهتمامات التقنية</p>
-            </div>
-
-            <div class="about-layout">
-                <div class="about-card">
-                    <h3>نبذة عني</h3>
-                    <p>
-                        حاصل على شهادة البكالوريوس وشهادة الدبلوم
-                        في التقنيات الإدارية القانونية.
-                    </p>
-                    <p>
-                        مهتم بتطوير البرمجيات وتصميم مواقع الويب
-                        وإنشاء الأنظمة الإلكترونية وبوتات تيليجرام
-                        باستخدام لغة Python.
-                    </p>
-                    <p>
-                        أسعى إلى تطوير مهاراتي التقنية والمساهمة
-                        في بناء حلول رقمية عملية ومفيدة.
-                    </p>
-                </div>
-
-                <div class="info-card">
-                    <div class="info-item">
-                        <span class="info-icon">🎓</span>
-                        <div>
-                            <h4>المؤهل العلمي</h4>
-                            <p>البكالوريوس والدبلوم في التقنيات الإدارية القانونية</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-icon">💻</span>
-                        <div>
-                            <h4>مجال الاهتمام</h4>
-                            <p>البرمجة وتطوير المواقع والأنظمة</p>
-                        </div>
-                    </div>
-
-                    <div class="info-item">
-                        <span class="info-icon">🔐</span>
-                        <div>
-                            <h4>اهتمامات تقنية</h4>
-                            <p>الأمن السيبراني والتحول الرقمي</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="skills" class="section reveal">
-            <div class="section-heading">
-                <span>ماذا أستطيع أن أفعل؟</span>
-                <h2>المهارات التقنية</h2>
-                <p>مجالات البرمجة والتقنيات التي أهتم بها</p>
-            </div>
-
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>HTML</h3>
-                        <span>تطوير الواجهات</span>
-                    </div>
-                    <div class="skill-track"><div style="width:85%"></div></div>
-                </div>
-
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>CSS</h3>
-                        <span>التصميم والتنسيق</span>
-                    </div>
-                    <div class="skill-track"><div style="width:80%"></div></div>
-                </div>
-
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>JavaScript</h3>
-                        <span>التفاعل والبرمجة</span>
-                    </div>
-                    <div class="skill-track"><div style="width:70%"></div></div>
-                </div>
-
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>Python</h3>
-                        <span>تطوير البرامج والبوتات</span>
-                    </div>
-                    <div class="skill-track"><div style="width:80%"></div></div>
-                </div>
-
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>Telegram Bots</h3>
-                        <span>تطوير بوتات تيليجرام</span>
-                    </div>
-                    <div class="skill-track"><div style="width:80%"></div></div>
-                </div>
-
-                <div class="skill-card">
-                    <div class="skill-top">
-                        <h3>Cybersecurity</h3>
-                        <span>الاهتمام بأمن المواقع</span>
-                    </div>
-                    <div class="skill-track"><div style="width:65%"></div></div>
-                </div>
-            </div>
-
-            <p class="skill-note">
-                النسب تمثيلية ويمكن تعديلها بحسب مستوى الخبرة الفعلي.
+    <!-- قسم عني -->
+    <section id="about">
+        <h2 class="section-title">عني</h2>
+        <p class="section-subtitle">الجمع بين التنظيم الإداري والقانوني والخبرة البرمجية التطبيقية</p>
+        <div class="card">
+            <p class="about-main">
+                أنا <strong>عبد الرحمن وليد هاشم</strong>، خريج دبلوم <strong>تقنيات الإدارة القانونية</strong> في كلية البوليتكنيك نينوى. أعمل في برمجة وتطوير مواقع الويب، فحص المواقع والتأكد من سلامتها، وبرمجة بوتات التليجرام التي تختصر الوقت وتؤتمت العمليات اليومية.
             </p>
-        </section>
+            <p class="about-sub">
+                تساعدني خلفيتي القانونية والإدارية في بناء أنظمة ومنصات واضحة، منظمة، وموثوقة تحترم خصوصية البيانات وتدعم المشاريع التجارية والأكاديمية والخدمية.
+            </p>
+        </div>
+    </section>
 
-        <section id="services" class="section reveal">
-            <div class="section-heading">
-                <span>مجالات العمل</span>
-                <h2>الخدمات والاهتمامات</h2>
-                <p>حلول تقنية وبرمجية متنوعة</p>
+    <!-- قسم الخدمات + أداة فحص سريع للمواقع -->
+    <section id="services">
+        <h2 class="section-title">الخدمات</h2>
+        <p class="section-subtitle">خدمات تقنية عملية لبناء وحماية وتطوير حضورك الرقمي</p>
+
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-code"></i></div>
+                <h3>برمجة المواقع</h3>
+                <p>تصميم وبرمجة مواقع تعريفية، متاجر إلكترونية، ولوحات إدارة متجاوبة مع الهاتف والحاسوب بواجهة حديثة وأداء سريع.</p>
             </div>
 
-            <div class="cards">
-                <article class="card">
-                    <div class="card-icon">🌐</div>
-                    <h3>تطوير المواقع</h3>
-                    <p>إنشاء مواقع إلكترونية بتصميم متجاوب وتجربة استخدام سهلة.</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-icon">🤖</div>
-                    <h3>بوتات تيليجرام</h3>
-                    <p>برمجة بوتات لإدارة المهام والخدمات والعمليات المختلفة.</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-icon">🔐</div>
-                    <h3>أمن المواقع</h3>
-                    <p>الاهتمام بفحص المواقع وتحسين جوانب الأمان والجودة.</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-icon">⚡</div>
-                    <h3>الأتمتة البرمجية</h3>
-                    <p>تطوير أدوات تساعد على إنجاز الأعمال بصورة أسرع.</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="projects" class="section reveal">
-            <div class="section-heading">
-                <span>أعمال تقنية</span>
-                <h2>المشاريع والاهتمامات</h2>
-                <p>مجالات أعمل على تطوير أفكار ومشاريع فيها</p>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>فحص المواقع</h3>
+                <p>فحص المواقع لاكتشاف الأخطاء البرمجية، مشاكل الأمان، ضعف التهيئة، وتحسين الموثوقية قبل الإطلاق أو أثناء التشغيل.</p>
             </div>
 
-            <div class="projects-grid">
-                <article class="project-card">
-                    <div class="project-visual visual-one">WEB</div>
-                    <div class="project-content">
-                        <span class="project-category">تطوير الويب</span>
-                        <h3>أنظمة ومواقع إلكترونية</h3>
-                        <p>تصميم واجهات ومواقع لخدمة المستخدمين وتنظيم الأعمال.</p>
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-robot"></i></div>
+                <h3>برمجة بوتات التليجرام</h3>
+                <p>برمجة بوتات تليجرام متكاملة للطلبات، الخدمات، إدارة المجموعات والقنوات، والربط مع قواعد البيانات والواجهات.</p>
+            </div>
+        </div>
+
+        <!-- أداة فحص رابط سريع -->
+        <div class="scanner-box">
+            <h3><i class="fas fa-radar"></i> فحص مبدئي سريع لرابط موقع</h3>
+            <p>أدخل رابط أي موقع لاختبار حالة التشفير HTTPS وبنية الرابط بشكل فوري:</p>
+            <div class="scanner-form">
+                <input type="text" id="urlInput" placeholder="مثال: https://example.com">
+                <button type="button" id="scanBtn" class="btn-primary">فحص الرابط</button>
+            </div>
+            <div id="scanResult" class="scan-result"></div>
+        </div>
+    </section>
+
+    <!-- قسم التحول الرقمي وفوائد التجارة الإلكترونية -->
+    <section id="digital">
+        <h2 class="section-title">التحول الرقمي والتجارة الإلكترونية</h2>
+        <p class="section-subtitle">فوائد التحول الرقمي والانتقال نحو التجارة الإلكترونية للمشاريع والأعمال</p>
+
+        <div class="digital-box">
+            <p class="digital-intro">
+                يمثل <strong>التحول الرقمي</strong> خطوة أساسية لتطوير أي نشاط أو مشروع، ومع انتشار التسوق عبر الإنترنت أصبح <strong>التحول نحو التجارة الإلكترونية</strong> وسيلة مباشرة لزيادة المبيعات وتنظيم العمل وتقليل الاعتماد على الطرق التقليدية المحدودة.
+            </p>
+
+            <ul class="benefits-list">
+                <li>
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <strong>العمل على مدار الساعة (24/7)</strong>
+                        <p>استقبال الطلبات وعرض المنتجات والخدمات للعملاء في أي وقت ومن أي مكان.</p>
                     </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-visual visual-two">BOT</div>
-                    <div class="project-content">
-                        <span class="project-category">Python</span>
-                        <h3>أنظمة بوتات تيليجرام</h3>
-                        <p>بناء بوتات تفاعلية لتقديم الخدمات وإدارة المهام.</p>
+                </li>
+                <li>
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <strong>توسيع قاعدة العملاء والمبيعات</strong>
+                        <p>الوصول إلى زبائن جدد خارج النطاق الجغرافي الضيق وزيادة فرص النمو المستمر.</p>
                     </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-visual visual-three">AI</div>
-                    <div class="project-content">
-                        <span class="project-category">التقنيات الحديثة</span>
-                        <h3>الحلول الرقمية</h3>
-                        <p>استكشاف الأفكار التقنية وتوظيف الأدوات الرقمية في الأعمال.</p>
+                </li>
+                <li>
+                    <i class="fas fa-wallet"></i>
+                    <div>
+                        <strong>تقليل التكاليف وتنظيم الإدارة</strong>
+                        <p>أتمتة عرض المنتجات، تسجيل الطلبات، ومتابعة الفواتير والبيانات بدقة وسرعة.</p>
                     </div>
-                </article>
-            </div>
-        </section>
+                </li>
+                <li>
+                    <i class="fas fa-award"></i>
+                    <div>
+                        <strong>تعزيز الهوية والثقة الرقمية</strong>
+                        <p>وجود موقع إلكتروني احترافي وآمن يمنح مشروعك مصداقية أعلى أمام العملاء والشركاء.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
 
-        <section id="digital" class="section digital-section reveal">
-            <div class="section-heading">
-                <span>نحو مستقبل رقمي</span>
-                <h2>التحول الرقمي</h2>
-                <p>التكنولوجيا وسيلة لتطوير الأعمال وتحسين الخدمات</p>
-            </div>
+    <!-- قسم الشهادات -->
+    <section id="certificates">
+        <h2 class="section-title">الشهادات</h2>
+        <p class="section-subtitle">المؤهلات الأكاديمية والمسارات التخصصية</p>
 
-            <div class="digital-content">
-                <div class="digital-text">
-                    <h3>رؤيتي للتحول الرقمي</h3>
-                    <p>
-                        أؤمن بأهمية استخدام التكنولوجيا في تطوير
-                        الإجراءات الإدارية والقانونية وتحويل الأعمال
-                        التقليدية إلى أنظمة رقمية أكثر تنظيماً وكفاءة.
-                    </p>
+        <div class="cert-card">
+            <i class="fas fa-graduation-cap"></i>
+            <div>
+                <h3>دبلوم تقنيات الإدارة القانونية</h3>
+                <p class="cert-org">كلية البوليتكنيك نينوى</p>
+                <p class="cert-desc">دراسة متخصصة تجمع بين الإدارة المؤسسية والأنظمة القانونية وتنظيم الوثائق والإجراءات.</p>
+            </div>
+        </div>
+
+        <div class="cert-card">
+            <i class="fas fa-laptop-code"></i>
+            <div>
+                <h3>تخصص برمجة وفحص المواقع وبوتات التليجرام</h3>
+                <p class="cert-org">تطوير الويب والأتمتة الرقمية</p>
+                <p class="cert-desc">خبرة تطبيقية في بناء مواقع الويب، فحص سلامة المواقع، وتطوير بوتات تليجرام عملية.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الاتصال -->
+    <section id="contact">
+        <h2 class="section-title">الاتصال</h2>
+        <p class="section-subtitle">تواصل مباشرة عبر الهاتف أو إنستقرام أو تليجرام أو واتساب</p>
+
+        <div class="contact-grid">
+            <div class="contact-item">
+                <i class="fas fa-phone-volume"></i>
+                <h3>رقم الهاتف</h3>
+                <p dir="ltr" class="contact-highlight">07725372995</p>
+                <div class="contact-actions">
+                    <a href="tel:+9647725372995" class="mini-btn">اتصال</a>
+                    <button type="button" class="mini-btn copy-btn" data-copy="07725372995">نسخ</button>
                 </div>
+            </div>
 
-                <div class="digital-points">
-                    <div>✓ رقمنة الإجراءات والمعاملات</div>
-                    <div>✓ أتمتة الأعمال والمهام</div>
-                    <div>✓ تنظيم البيانات وإدارتها</div>
-                    <div>✓ تطوير الخدمات الإلكترونية</div>
-                    <div>✓ الاهتمام بأمن المعلومات</div>
+            <div class="contact-item">
+                <i class="fab fa-instagram"></i>
+                <h3>إنستقرام</h3>
+                <p dir="ltr" class="contact-highlight">@25ff99</p>
+                <div class="contact-actions">
+                    <a href="https://www.instagram.com/25ff99" target="_blank" class="mini-btn">فتح الحساب</a>
+                    <button type="button" class="mini-btn copy-btn" data-copy="25ff99">نسخ</button>
                 </div>
             </div>
-        </section>
 
-        <section id="contact" class="section contact-section reveal">
-            <div class="section-heading">
-                <span>لنبقَ على تواصل</span>
-                <h2>تواصل معي</h2>
-                <p>يسعدني التواصل والتعاون في المجالات التقنية</p>
-            </div>
+            <a href="https://t.me/+9647725372995" target="_blank" class="contact-item">
+                <i class="fab fa-telegram-plane"></i>
+                <h3>تليجرام</h3>
+                <p class="contact-sub">تواصل مباشر عبر تليجرام</p>
+            </a>
 
-            <div class="contact-grid">
-                <a class="contact-card" href="https://www.instagram.com/25ff99?hvrq=eHNleHNhNHFyaWoy" target="_blank" rel="noopener noreferrer">
-                    <span>📷</span>
-                    <h3>Instagram</h3>
-                    <p>تابعني على إنستغرام</p>
-                </a>
+            <a href="https://wa.me/9647725372995" target="_blank" class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <h3>واتساب</h3>
+                <p class="contact-sub">مراسلة فورية عبر واتساب</p>
+            </a>
+        </div>
+    </section>
 
-                <a class="contact-card" href="https://wa.me/9647725372995" target="_blank" rel="noopener noreferrer">
-                    <span>💬</span>
-                    <h3>WhatsApp</h3>
-                    <p>تواصل معي عبر واتساب</p>
-                </a>
-            </div>
-        </section>
+    <footer>
+        <p>عبد الرحمن وليد هاشم — كلية البوليتكنيك نينوى | برمجة وفحص المواقع وبوتات التليجرام</p>
+    </footer>
 
-        <footer class="footer">
-            <h3>عبد الرحمن وليد هاشم</h3>
-            <p>البرمجة | التكنولوجيا | التحول الرقمي</p>
-            <p>© <span id="year"></span> جميع الحقوق محفوظة</p>
-        </footer>
-
-    </main>
-
-    <button id="backToTop" class="back-to-top" aria-label="العودة للأعلى">↑</button>
+    <!-- إشعار النسخ السريع -->
+    <div id="toast" class="toast">تم النسخ بنجاح</div>
 
     <script src="script.js"></script>
 </body>
