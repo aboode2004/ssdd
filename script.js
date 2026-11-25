@@ -1,144 +1,78 @@
+// التحكم بالقائمة الجانبية
+const openMenuBtn = document.getElementById('openMenu');
+const closeMenuBtn = document.getElementById('closeMenu');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const navItems = document.querySelectorAll('.nav-item');
 
-document.addEventListener("DOMContentLoaded", function () {
+function openSidebar() {
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+}
 
-    const menuToggle = document.getElementById("menuToggle");
-    const sidebar = document.getElementById("sidebar");
-    const overlay = document.getElementById("overlay");
-    const themeToggle = document.getElementById("themeToggle");
-    const backToTop = document.getElementById("backToTop");
-    const pageLoader = document.getElementById("pageLoader");
+function closeSidebar() {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+}
 
-    // إخفاء شاشة التحميل
-    window.addEventListener("load", function () {
-        pageLoader.classList.add("hidden");
-    });
+openMenuBtn.addEventListener('click', openSidebar);
+closeMenuBtn.addEventListener('click', closeSidebar);
+overlay.addEventListener('click', closeSidebar);
 
-    // القائمة الجانبية
-    function closeMenu() {
-        sidebar.classList.remove("active");
-        overlay.classList.remove("active");
+navItems.forEach(item => {
+    item.addEventListener('click', closeSidebar);
+});
+
+// أداة الفحص المبدئي السريع للروابط
+const scanBtn = document.getElementById('scanBtn');
+const urlInput = document.getElementById('urlInput');
+const scanResult = document.getElementById('scanResult');
+
+scanBtn.addEventListener('click', () => {
+    let rawUrl = urlInput.value.trim();
+    if (!rawUrl) {
+        scanResult.innerHTML = '⚠️ يرجى إدخال رابط موقع أولاً.';
+        return;
     }
 
-    menuToggle.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
-        overlay.classList.toggle("active");
-    });
-
-    overlay.addEventListener("click", closeMenu);
-
-    // إغلاق القائمة عند اختيار قسم
-    document.querySelectorAll(".navigation a").forEach(function (link) {
-        link.addEventListener("click", closeMenu);
-    });
-
-    // الوضع الليلي والنهاري
-    const savedTheme = localStorage.getItem("website-theme");
-
-    if (savedTheme === "dark") {
-        document.body.classList.add("dark-mode");
-        themeToggle.textContent = "☀";
+    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+        rawUrl = 'https://' + rawUrl;
     }
 
-    themeToggle.addEventListener("click", function () {
-        document.body.classList.toggle("dark-mode");
+    try {
+        const parsed = new URL(rawUrl);
+        const isHttps = parsed.protocol === 'https:';
+        const statusText = isHttps
+            ? '✅ يستخدم بروتوكول HTTPS المشفر (جيد للأمان).'
+            : '⚠️ لا يستخدم HTTPS — يُنصح بتفعيل شهادة SSL لحماية بيانات المستخدمين.';
 
-        const isDark = document.body.classList.contains("dark-mode");
-
-        themeToggle.textContent = isDark ? "☀" : "☾";
-
-        localStorage.setItem(
-            "website-theme",
-            isDark ? "dark" : "light"
-        );
-    });
-
-    // زر العودة إلى الأعلى
-    window.addEventListener("scroll", function () {
-
-        if (window.scrollY > 350) {
-            backToTop.classList.add("visible");
-        } else {
-            backToTop.classList.remove("visible");
-        }
-
-    });
-
-    backToTop.addEventListener("click", function () {
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    });
-
-    // تأثير ظهور العناصر
-    const revealElements = document.querySelectorAll(".reveal");
-
-    if ("IntersectionObserver" in window) {
-
-        const revealObserver = new IntersectionObserver(function (entries) {
-
-            entries.forEach(function (entry) {
-
-                if (entry.isIntersecting) {
-                    entry.target.classList.add("show");
-                    revealObserver.unobserve(entry.target);
-                }
-
-            });
-
-        }, {
-            threshold: 0.12
-        });
-
-        revealElements.forEach(function (element) {
-            revealObserver.observe(element);
-        });
-
-    } else {
-        revealElements.forEach(function (element) {
-            element.classList.add("show");
-        });
+        scanResult.innerHTML = `
+            <div><strong>النطاق:</strong> ${parsed.hostname}</div>
+            <div>${statusText}</div>
+            <div style="color:#9ab3b1; margin-top:4px;">للفحص العميق للثغرات والأداء والربط البرمجي، تواصل معي مباشرة.</div>
+        `;
+    } catch {
+        scanResult.innerHTML = '❌ صيغة الرابط غير صحيحة، تأكد من كتابته بشكل سليم.';
     }
+});
 
-    // تحديد القسم الحالي في القائمة
-    const sections = document.querySelectorAll("main section[id]");
-    const navigationLinks = document.querySelectorAll(".navigation a");
+// نسخ رقم الهاتف أو معرف الإنستقرام بنقرة واحدة
+const copyButtons = document.querySelectorAll('.copy-btn');
+const toast = document.getElementById('toast');
 
-    if ("IntersectionObserver" in window) {
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2200);
+}
 
-        const sectionObserver = new IntersectionObserver(function (entries) {
-
-            entries.forEach(function (entry) {
-
-                if (entry.isIntersecting) {
-
-                    const currentId = entry.target.getAttribute("id");
-
-                    navigationLinks.forEach(function (link) {
-
-                        link.classList.remove("active");
-
-                        if (link.getAttribute("href") === "#" + currentId) {
-                            link.classList.add("active");
-                        }
-
-                    });
-
-                }
-
-            });
-
-        }, {
-            rootMargin: "-25% 0px -60% 0px"
+copyButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const textToCopy = btn.getAttribute('data-copy');
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showToast(`تم نسخ ${textToCopy}`);
         });
-
-        sections.forEach(function (section) {
-            sectionObserver.observe(section);
-        });
-    }
-
-    // السنة الحالية تلقائياً
-    document.getElementById("year").textContent =
-        new Date().getFullYear();
-
+    });
 });
